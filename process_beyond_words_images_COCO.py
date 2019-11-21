@@ -23,13 +23,15 @@ def rescale(dimension):
 
 data = {}
 
+today = str(datetime.date.today().month) + "/" + str(datetime.date.today().day) + "/" + str(datetime.date.today().year)
+
 data["info"] = {
                 "description": "Beyond Words Dataset (verified)",
                 "URL": "http://beyondwords.labs.loc.gov/#/",
                 "version":"1.0",
                 "year": datetime.date.today().year,
                 "contributor": "Benjamin Charles Germain Lee",
-                "date_created": datetime.date.today()
+                "date_created": today
                 }
 
 data["licenses"] = [{
@@ -66,7 +68,7 @@ def add_image(data, filename, url, height, width, date_captured, id):
             "url": url,
             "height": height,
             "width": width,
-            "date_captured": datetime.datetime.now(),
+            "date_captured": today,
             "id": id
             }
     data["images"].append(image)
@@ -117,7 +119,7 @@ ct = 1
 
 # now, we iterate through each unique path and grab the image using requests
 # we also find all corresponding annotations and draw masks
-for path in unique_paths[:10]:  #can truncate (e.g., [:10]) for testing here
+for path in unique_paths:  #can truncate (e.g., [:10]) for testing here
 
     # destination filepath of image
     destination = "beyond_words_data/images/" + str(ct) + ".jpg"
@@ -147,7 +149,7 @@ for path in unique_paths[:10]:  #can truncate (e.g., [:10]) for testing here
     im_height = rescale(image_dim_dict[path]["height"])
 
     # function to add image to JSON
-    add_image(data, destination, path, im_height, im_width, datetime.datetime.now(), ct)
+    add_image(data, str(ct) + ".jpg", path, im_height, im_width, today, ct)
 
     # now, we construct the label image to add the annotations
     label = Image.new(mode = "RGB", size = (im_width, im_height))
