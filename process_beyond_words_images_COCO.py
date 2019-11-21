@@ -11,12 +11,11 @@ from datetime import date
 import pprint
 
 # resampling scale
-scale = 4
+scale = 6
 
 # this function downscales according to scale defined above
 def rescale(dimension):
     return math.floor(dimension/float(scale))
-
 
 # this script creates a COCO-formatted dataset out of the Beyond Words data
 # it adheres to this schema:  http://cocodataset.org/#format-data
@@ -80,7 +79,7 @@ def add_annotation(data, id, image_id, category_id, bbox):
                 "image_id": image_id,
                 "category_id": category_id,
                 "bbox": bbox,
-                "iscrowd": 1,
+                "iscrowd": 0,
                 }
     data["annotations"].append(annotation)
 
