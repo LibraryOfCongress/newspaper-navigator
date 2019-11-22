@@ -43,17 +43,17 @@ data["categories"] = [
                         {
                         "id": 0,
                         "name": "Photograph",
-                        "supercategory": "Photograph",
+                        "supercategory": "Content",
                         },
                         {
                         "id": 1,
                         "name": "Map",
-                        "supercategory": "Map",
+                        "supercategory": "Content",
                         },
                         {
                         "id": 2,
                         "name": "Comics/Cartoon",
-                        "supercategory": "Comics/Cartoon"
+                        "supercategory": "Content"
                         }
                     ]
 
@@ -150,10 +150,10 @@ for path in unique_paths:  #can truncate (e.g., [:10]) for testing here
     # function to add image to JSON
     add_image(data, str(ct) + ".jpg", path, im_height, im_width, today, ct)
 
-    # now, we construct the label image to add the annotations
-    label = Image.new(mode = "RGB", size = (im_width, im_height))
-    draw  = ImageDraw.Draw(label)
-    draw.rectangle(((0, 0), (im_width, im_height)), fill="black")
+    # # now, we construct the label image to add the annotations
+    # label = Image.new(mode = "RGB", size = (im_width, im_height))
+    # draw  = ImageDraw.Draw(label)
+    # draw.rectangle(((0, 0), (im_width, im_height)), fill="black")
 
     # counts the number of annotations per image
     n_annotations = 0
@@ -209,15 +209,15 @@ for path in unique_paths:  #can truncate (e.g., [:10]) for testing here
 
             # add annotation to label image based on category type
             if category == 'Photograph':
-                draw.rectangle(((x1, y1), (x2, y2)), fill="red")
+                # draw.rectangle(((x1, y1), (x2, y2)), fill="red")
                 # add the annotation using the COCO data format
                 add_annotation(data, id, ct, 0, bbox)
             elif category == 'Map':
-                draw.rectangle(((x1, y1), (x2, y2)), fill="green")
+                # draw.rectangle(((x1, y1), (x2, y2)), fill="green")
                 # add the annotation using the COCO data format
                 add_annotation(data, id, ct, 1, bbox)
             elif category == 'Comics/Cartoon':
-                draw.rectangle(((x1, y1), (x2, y2)), fill="blue")
+                # draw.rectangle(((x1, y1), (x2, y2)), fill="blue")
                 # add the annotation using the COCO data format
                 add_annotation(data, id, ct, 2, bbox)
 
@@ -229,15 +229,55 @@ for path in unique_paths:  #can truncate (e.g., [:10]) for testing here
 
     print("Number of annotations for this image: " + str(n_annotations))
 
-    # constructs filepath for downloaded image
-    label_path = "beyond_words_data/labels/" + str(ct)
-
-    # save the constructed image
-    label.save(label_path, "PNG")
+    # # constructs filepath for downloaded image
+    # label_path = "beyond_words_data/labels/" + str(ct)
+    #
+    # # save the constructed image
+    # label.save(label_path, "PNG")
 
     # increment count for log
     ct += 1
 
 # dumps json containing all annotation & image data in COCO format
 with open('beyond_words_data/trainval.json', 'w') as f:
+    json.dump(data, f)
+
+# removes stale links
+with open('beyond_words_data/trainval.json') as json_file:
+    data = json.load(json_file)
+
+filenames = glob.glob('./beyond_words_data/images/*.jpg')
+
+# total number of expected images in dataset
+ct = len(data["images"])
+print(ct)
+
+stale_filenames = []
+stale_indices = []
+
+for i in range(1, ct):
+    if ("./beyond_words_data/images/" + str(i) + ".jpg") not in filenames:
+        stale_filenames.append(str(i) + ".jpg")
+        print(i)
+        stale_indices.append(i)
+
+updated_images = []
+for k in data["images"]:
+    if k["file_name"] in stale_filenames:
+        continue
+    else:
+        updated_images.append(k)
+
+updated_annotations = []
+for k in data["annotations"]:
+    if k["image_id"] in stale_indices:
+        continue
+    else:
+        updated_annotations.append(k)
+
+data["images"] = updated_images
+data["annotations"] = updated_annotations
+
+# dumps json containing all annotation & image data in COCO format
+with open('beyond_words_data/trainval_corrected.json', 'w') as f:
     json.dump(data, f)
