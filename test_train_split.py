@@ -11,6 +11,15 @@ filenames = glob.glob('./beyond_words_data/images/*.jpg')
 ct = len(data["images"])
 print(ct)
 
+stale_filenames = []
+stale_indices = []
+for i in range(1, ct):
+    if ("./beyond_words_data/images/" + str(i) + ".jpg") not in filenames:
+        stale_filenames.append(str(i) + ".jpg")
+        print(i)
+        stale_indices.append(i)
+
+
 train_filenames = []
 train_indices = []
 test_filenames = []
@@ -27,21 +36,29 @@ for i in range(1, ct):
 
 train_images = []
 for k in data["images"]:
+    if k["file_name"] in stale_filenames:
+        continue
     if k["file_name"] in train_filenames:
         train_images.append(k)
 
 train_annotations = []
 for k in data["annotations"]:
+    if k["image_id"] in stale_indices:
+        continue
     if k["image_id"] in train_indices:
         train_annotations.append(k)
 
 test_images = []
 for k in data["images"]:
+    if k["file_name"] in stale_filenames:
+        continue
     if k["file_name"] in test_filenames:
         test_images.append(k)
 
 test_annotations = []
 for k in data["annotations"]:
+    if k["image_id"] in stale_indices:
+        continue
     if k["image_id"] in test_indices:
         test_annotations.append(k)
 
