@@ -1,6 +1,11 @@
+# this code partitions the dataset into a train/test split according to the user's specified fraction
+
 import json
 import glob
 import sys
+
+# sets train/test split
+train_frac = 0.8
 
 with open('beyond_words_data/trainval.json') as json_file:
     data = json.load(json_file)
@@ -26,7 +31,7 @@ test_filenames = []
 test_indices = []
 
 for i in range(1, ct):
-    if i < 3000:
+    if i < int(ct*train_frac):
         train_filenames.append(str(i) + ".jpg")
         train_indices.append(i)
     else:

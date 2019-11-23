@@ -242,7 +242,7 @@ for path in unique_paths:  #can truncate (e.g., [:10]) for testing here
 with open('beyond_words_data/trainval.json', 'w') as f:
     json.dump(data, f)
 
-# removes stale links
+# this next chunk of code removes stale downloads (files that didn't download properly)
 with open('beyond_words_data/trainval.json') as json_file:
     data = json.load(json_file)
 
