@@ -293,24 +293,3 @@ data["annotations"] = updated_annotations
 # dumps json containing all annotation & image data in COCO format
 with open('beyond_words_data/trainval.json', 'w') as f:
     json.dump(data, f)
-
-
-# # we now fix the annotation IDs to be integers and add the area field to each annotation
-# with open('beyond_words_data/trainval.json') as json_file:
-#     data = json.load(json_file)
-#
-# new_annotations = []
-#
-# id = 0
-# for k in data["annotations"]:
-#     k["area"] = k["bbox"][2]*k["bbox"][3]
-#     k["bw_id"] = k["id"]
-#     k["id"] = id
-#     new_annotations.append(k)
-#     id += 1
-#
-# data["annotations"] = new_annotations
-#
-# # dumps json containing all annotation & image data in COCO format
-# with open('beyond_words_data/trainval_with_area.json', 'w') as f:
-#     json.dump(data, f)
