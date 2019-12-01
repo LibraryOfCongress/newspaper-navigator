@@ -3,6 +3,8 @@ import sys
 import glob
 import json
 
+# constant used to downsample the ChronAm images; we need to upsample for coordinates here
+UPSAMPLE = 6
 
 # given a file path and a list of bounding boxes, this function traverses the XML
 # and returns the OCR within each bounding box
@@ -40,26 +42,24 @@ def retrieve_ocr(filepath, bounding_boxes):
             # we now iterate over every string in each line (each string is separated by whitespace)
             for string in strings:
 
-                h1 = string.attrib["HPOS"]
-                w1 = string.attrib["VPOS"]
-                h2 = h1 + string.attrib["HEIGHT"]
-                w2 = w1 + string.attrib["WIDTH"]
+                h1 = int(string.attrib["HPOS"])
+                w1 = int(string.attrib["VPOS"])
+                h2 = h1 + int(string.attrib["HEIGHT"])
+                w2 = w1 + int(string.attrib["WIDTH"])
 
                 # we now iterate over each bounding box and find whether the string lies within the box
                 for i in range(0, len(bounding_boxes)):
 
-                    bounding_box = boundin_boxes[i]
+                    bounding_box = bounding_boxes[i]
 
-                    if h1 > bounding_box[0]:
-                        if h2 < bounding_box[0] + bounding_box[2]:
-                            if w1 > bounding_box[1]:
-                                if w2 < bounding_box[1] + bounding_box[3]:
+                    if h1 > bounding_box[0]*UPSAMPLE:
+                        if h2 < (bounding_box[0] + bounding_box[2])*UPSAMPLE:
+                            if w1 > bounding_box[1]*UPSAMPLE:
+                                if w2 < (bounding_box[1] + bounding_box[3])*UPSAMPLE:
 
                                     ocr[i].append(string.attrib["CONTENT"])
 
-
-        sys.exit()
-
+    return ocr
 
 # first, we grab all of the predicted bounding boxes and xml
 json_filepaths = glob.glob('./tests/predictions/*.json')
@@ -74,27 +74,33 @@ for json_file in json_filepaths:
     with open(json_file) as f:
         predictions = json.load(f)
 
-        # pulls off relevant data fields from the JSON
-        original_img_filepath = predictions['file_name']
-        boxes = predictions['boxes']
-        scores = predictions['scores']
-        classes = predictions['pred_classes']
+    # pulls off relevant data fields from the JSON
+    original_img_filepath = predictions['file_name']
+    boxes = predictions['boxes']
+    scores = predictions['scores']
+    classes = predictions['pred_classes']
 
-        # sets the number of predicted bounding boxes
-        n_pred = len(scores)
+    # sets the number of predicted bounding boxes
+    n_pred = len(scores)
 
-        # we now find the XML file corresponding to this file
-        stem = original_img_filepath[original_img_filepath.find('FullPages'):-4]
-        xml_filepath = '../chronam-get-images/data/' + stem + '.xml'
+    # we now find the XML file corresponding to this file
+    stem = original_img_filepath[original_img_filepath.find('FullPages'):-4]
+    xml_filepath = '../chronam-get-images/data/' + stem + '.xml'
 
-        # stores list of OCR
-        ocr = []
+    print(xml_filepath)
 
-        # we only try to retrieve the OCR if there is one or more predicted box
-        if n_pred > 0:
-            retrieve_ocr(xml_filepath, boxes)
+    # stores list of OCR
+    ocr = []
 
-        sys.exit()
+    # we only try to retrieve the OCR if there is one or more predicted box
+    if n_pred > 0:
+        ocr = etrieve_ocr(xml_filepath, boxes)
+
+    predictions['ocr'] = ocr
+
+    # we save the updated JSON
+    with open(json_file[:-5] + '_with_OCR.json') as f:
+        predictions = json.load(f)
 
 
-sys.exit()
+    sys.exit()
