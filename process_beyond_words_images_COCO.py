@@ -215,7 +215,7 @@ for path in unique_paths:  #can truncate (e.g., [:10]) for testing here
                 # draw.rectangle(((x1, y1), (x2, y2)), fill="red")
                 # add the annotation using the COCO data format
                 add_annotation(data, i, id, ct, 0, bbox)
-            elif category == 'Illustration/Photo':
+            elif category == 'Illustration':
                 # draw.rectangle(((x1, y1), (x2, y2)), fill="orange")
                 # add the annotation using the COCO data format
                 add_annotation(data, i, id, ct, 1, bbox)
@@ -227,7 +227,7 @@ for path in unique_paths:  #can truncate (e.g., [:10]) for testing here
                 # draw.rectangle(((x1, y1), (x2, y2)), fill="blue")
                 # add the annotation using the COCO data format
                 add_annotation(data, i, id, ct, 3, bbox)
-            elif category == 'Editorial Cartoon"':
+            elif category == 'Editorial Cartoon':
                 # draw.rectangle(((x1, y1), (x2, y2)), fill="purple")
                 # add the annotation using the COCO data format
                 add_annotation(data, i, id, ct, 4, bbox)
