@@ -74,12 +74,12 @@ print(len(train_images))
 print(len(test_images))
 
 # dumps json containing all annotation & image data in COCO format
-with open('beyond_words_data/trainval_' + str(train_frac) + '.json', 'w') as f:
+with open('beyond_words_data/trainval_' + str(int(train_frac*100)) + '_percent.json', 'w') as f:
     json.dump(data, f)
 
 data["images"] = test_images
 data["annotations"] = test_annotations
 
 # dumps json containing all annotation & image data in COCO format
-with open('beyond_words_data/test_' + str(train_frac) + '.json', 'w') as f:
+with open('beyond_words_data/test_' + str(int(train_frac*100)) + '_percent.json', 'w') as f:
     json.dump(data, f)
