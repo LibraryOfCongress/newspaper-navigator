@@ -2,6 +2,7 @@ import xml.etree.ElementTree as ET
 import sys
 import glob
 import json
+from PIL import Image
 
 # constant used to downsample the ChronAm images; we need to upsample for coordinates here
 UPSAMPLE = 6
@@ -86,20 +87,31 @@ for json_file in json_filepaths:
     # we now find the XML file corresponding to this file
     stem = original_img_filepath[original_img_filepath.find('FullPages'):-4]
     xml_filepath = '../chronam-get-images/data/' + stem + '.xml'
+    jpg_filepath = '../chronam-get-images/data/' + stem + '.jpg'
 
-    print(xml_filepath)
+    # crops out the predicted bounding boxes
+    # here, we don't need to worry about upsampling because we are usign the downsampled image
+    for i in range(0, len(boxes)):
+
+        box = boxes[i]
+
+        # use PIL Image crop here
+        im = Image.open(jpg_filepath)
+        im = im.crop( (box[0], box[1], box[2], box[3]) )
+        im.save(jpg_filepath[:-4] + "_predicted_" + str(i) + ".jpg")
+
 
     # stores list of OCR
     ocr = []
 
     # we only try to retrieve the OCR if there is one or more predicted box
     if n_pred > 0:
-        ocr = etrieve_ocr(xml_filepath, boxes)
+        ocr = retrieve_ocr(xml_filepath, boxes)
 
     predictions['ocr'] = ocr
 
     # we save the updated JSON
-    with open(json_file[:-5] + '_with_OCR.json') as f:
+    with open(xml_filepath[:-4] + '.json') as f:
         predictions = json.load(f)
 
 
