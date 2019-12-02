@@ -4,9 +4,6 @@ import glob
 import json
 from PIL import Image, ImageDraw
 
-# constant used to downsample the ChronAm images; we need to upsample for coordinates here
-UPSAMPLE = 6
-
 # given a file path and a list of bounding boxes, this function traverses the XML
 # and returns the OCR within each bounding box
 def retrieve_ocr(filepath, bounding_boxes, true_img_filepath):
@@ -63,9 +60,8 @@ def retrieve_ocr(filepath, bounding_boxes, true_img_filepath):
                 w2 = w1 + int(string.attrib["WIDTH"])
                 h2 = h1 + int(string.attrib["HEIGHT"])
 
-                area = ((w1*CONVERSION, h1*CONVERSION), (w2*CONVERSION, h2*CONVERSION))
-                draw.rectangle(area, fill="red")
-
+                # area = ((w1*CONVERSION, h1*CONVERSION), (w2*CONVERSION, h2*CONVERSION))
+                # draw.rectangle(area, fill="red")
 
                 # we now iterate over each bounding box and find whether the string lies within the box
                 for i in range(0, len(bounding_boxes)):
@@ -73,16 +69,15 @@ def retrieve_ocr(filepath, bounding_boxes, true_img_filepath):
                     bounding_box = bounding_boxes[i]
 
                     # checks if the text appears within the bounding box
-                    if w1 > bounding_box[0]*UPSAMPLE:
-                        if w2 < (bounding_box[0] + bounding_box[2])*UPSAMPLE:
-                            if h1 > bounding_box[1]*UPSAMPLE:
-                                if h2 < (bounding_box[1] + bounding_box[3])*UPSAMPLE:
+                    if w1*CONVERSION > bounding_box[0]:
+                        if w2*CONVERSION < bounding_box[0] + bounding_box[2]:
+                            if h1*CONVERSION > bounding_box[1]:
+                                if h2*CONVERSION < bounding_box[1] + bounding_box[3]:
 
                                     # appends text content to list
                                     ocr[i].append(string.attrib["CONTENT"])
 
-    print("tests/sample/" + true_img_filepath[3:].replace("/", "_"))
-    im.save("tests/sample/" + true_img_filepath[3:].replace("/", "_"))
+    # im.save("tests/sample/" + true_img_filepath[3:].replace("/", "_"))
 
     return ocr
 
