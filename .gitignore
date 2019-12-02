@@ -3749,3 +3749,11 @@ tests/sample/chronam-get-images_data_FullPages_uidor_ver01_sn83045462_1944-06-07
 tests/sample/chronam-get-images_data_FullPages_uidor_ver01_sn83045462_1944-06-07_ed-1_sn83045462_1944-06-07_ed-1_seq-9.jpg
 tests/slideshow.mp4
 tests/test.xml
+beyond_words_data/old/trainval.json
+beyond_words_data/old/trainval_3000.json
+beyond_words_data/old/test_3000.json
+add_area.py
+beyond_words_data/.DS_Store
+beyond_words_data/old/test_80percent_with_area.json
+beyond_words_data/old/trainval_80percent_with_area.json
+beyond_words_data/old/trainval_with_area.json
