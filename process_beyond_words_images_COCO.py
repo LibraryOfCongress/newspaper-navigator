@@ -48,12 +48,22 @@ data["categories"] = [
                         },
                         {
                         "id": 1,
-                        "name": "Map",
+                        "name": "Illustration",
                         "supercategory": "Content",
                         },
                         {
                         "id": 2,
+                        "name": "Map",
+                        "supercategory": "Content"
+                        },
+                        {
+                        "id": 1,
                         "name": "Comics/Cartoon",
+                        "supercategory": "Content",
+                        },
+                        {
+                        "id": 2,
+                        "name": "Editorial Cartoon",
                         "supercategory": "Content"
                         }
                     ]
