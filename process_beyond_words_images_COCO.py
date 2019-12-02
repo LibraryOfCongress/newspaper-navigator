@@ -57,12 +57,12 @@ data["categories"] = [
                         "supercategory": "Content"
                         },
                         {
-                        "id": 1,
+                        "id": 3,
                         "name": "Comics/Cartoon",
                         "supercategory": "Content",
                         },
                         {
-                        "id": 2,
+                        "id": 4,
                         "name": "Editorial Cartoon",
                         "supercategory": "Content"
                         }
