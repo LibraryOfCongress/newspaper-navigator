@@ -2,14 +2,14 @@ import xml.etree.ElementTree as ET
 import sys
 import glob
 import json
-from PIL import Image
+from PIL import Image, ImageDraw
 
 # constant used to downsample the ChronAm images; we need to upsample for coordinates here
 UPSAMPLE = 6
 
 # given a file path and a list of bounding boxes, this function traverses the XML
 # and returns the OCR within each bounding box
-def retrieve_ocr(filepath, bounding_boxes):
+def retrieve_ocr(filepath, bounding_boxes, true_img_filepath):
 
     # creates empty nested list fo storing OCR in each box
     ocr = [ [] for i in range(len(bounding_boxes)) ]
@@ -29,6 +29,21 @@ def retrieve_ocr(filepath, bounding_boxes):
     # finds all of the text boxes on the page
     text_boxes = print_space.findall(prefix + 'TextBlock')
 
+
+    # gets page height and page width in inch1200 units
+    page_height_inch = int(page.attrib['HEIGHT'])
+    page_width_inch = int(page.attrib['WIDTH'])
+
+    # opens the actual page
+    im = Image.open(true_img_filepath)
+    draw  = ImageDraw.Draw(im)
+
+    # sets page height and width in pixel units
+    page_width_pix, page_height_pix = im.size
+
+    # sets conversion between pixels per inch
+    CONVERSION = float(page_height_pix)/float(page_height_inch)
+
     # we then iterate over each text box and find each text line
     for text_box in text_boxes:
 
@@ -43,22 +58,31 @@ def retrieve_ocr(filepath, bounding_boxes):
             # we now iterate over every string in each line (each string is separated by whitespace)
             for string in strings:
 
-                h1 = int(string.attrib["HPOS"])
-                w1 = int(string.attrib["VPOS"])
-                h2 = h1 + int(string.attrib["HEIGHT"])
+                w1 = int(string.attrib["HPOS"])
+                h1 = int(string.attrib["VPOS"])
                 w2 = w1 + int(string.attrib["WIDTH"])
+                h2 = h1 + int(string.attrib["HEIGHT"])
+
+                area = ((w1*CONVERSION, h1*CONVERSION), (w2*CONVERSION, h2*CONVERSION))
+                draw.rectangle(area, fill="red")
+
 
                 # we now iterate over each bounding box and find whether the string lies within the box
                 for i in range(0, len(bounding_boxes)):
 
                     bounding_box = bounding_boxes[i]
 
-                    if h1 > bounding_box[0]*UPSAMPLE:
-                        if h2 < (bounding_box[0] + bounding_box[2])*UPSAMPLE:
-                            if w1 > bounding_box[1]*UPSAMPLE:
-                                if w2 < (bounding_box[1] + bounding_box[3])*UPSAMPLE:
+                    # checks if the text appears within the bounding box
+                    if w1 > bounding_box[0]*UPSAMPLE:
+                        if w2 < (bounding_box[0] + bounding_box[2])*UPSAMPLE:
+                            if h1 > bounding_box[1]*UPSAMPLE:
+                                if h2 < (bounding_box[1] + bounding_box[3])*UPSAMPLE:
 
+                                    # appends text content to list
                                     ocr[i].append(string.attrib["CONTENT"])
+
+    print("tests/sample/" + true_img_filepath[3:].replace("/", "_"))
+    im.save("tests/sample/" + true_img_filepath[3:].replace("/", "_"))
 
     return ocr
 
@@ -84,10 +108,15 @@ for json_file in json_filepaths:
     # sets the number of predicted bounding boxes
     n_pred = len(scores)
 
-    # we now find the XML file corresponding to this file
+    # we now find the XML and JPG files corresponding to this predictions JSON
     stem = original_img_filepath[original_img_filepath.find('FullPages'):-4]
     xml_filepath = '../chronam-get-images/data/' + stem + '.xml'
     jpg_filepath = '../chronam-get-images/data/' + stem + '.jpg'
+
+    print(stem)
+
+    # we also now construct destination filepaths
+    cropped_filepath = jpg_filepath.split('data')[0] + 'predicted/' + jpg_filepath.split('data')[1].replace('/', '_')[:-4]
 
     # crops out the predicted bounding boxes
     # here, we don't need to worry about upsampling because we are usign the downsampled image
@@ -98,7 +127,7 @@ for json_file in json_filepaths:
         # use PIL Image crop here
         im = Image.open(jpg_filepath)
         im = im.crop( (box[0], box[1], box[2], box[3]) )
-        im.save(jpg_filepath[:-4] + "_predicted_" + str(i) + ".jpg")
+        im.save(cropped_filepath + "_predicted_" + str(i) + ".jpg")
 
 
     # stores list of OCR
@@ -106,13 +135,10 @@ for json_file in json_filepaths:
 
     # we only try to retrieve the OCR if there is one or more predicted box
     if n_pred > 0:
-        ocr = retrieve_ocr(xml_filepath, boxes)
+        ocr = retrieve_ocr(xml_filepath, boxes, jpg_filepath)
 
     predictions['ocr'] = ocr
 
     # we save the updated JSON
-    with open(xml_filepath[:-4] + '.json') as f:
-        predictions = json.load(f)
-
-
-    sys.exit()
+    with open(cropped_filepath + '_predictions.json', 'w') as f:
+        json.dump(predictions, f)
