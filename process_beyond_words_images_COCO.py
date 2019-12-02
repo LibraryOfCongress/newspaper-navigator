@@ -30,7 +30,7 @@ data["info"] = {
                 "URL": "http://beyondwords.labs.loc.gov/#/",
                 "version":"1.0",
                 "year": datetime.date.today().year,
-                "contributor": "Benjamin Charles Germain Lee",
+                "contributor": "LC Labs",
                 "date_created": today
                 }
 
