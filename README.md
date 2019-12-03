@@ -35,5 +35,9 @@ The notebook "\_" finetunes different pre-trained Faster-RCNN implementations fr
 
 The script "\_" extracts textual content within each predicted bounding box from the METZ/ALTO OCR XML file for each *Chronicling America* page.
 
+## Visualizing a Day in Newspaper History
+
+The script "\_" uses embeddings and T-SNE to ...
+
 
 (This README will be updated as new commits are added).
