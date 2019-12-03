@@ -29,6 +29,13 @@ With this dataset fully constructed, the next step is to train a deep learning m
 
 The Google Colab notebook "\_" contains code for finetuning different pre-trained Faster-RCNN implementations from <a href="https://github.com/facebookresearch/detectron2">Detectron2</a>'s <a href="https://github.com/facebookresearch/detectron2/blob/master/MODEL_ZOO.md">Model Zoo</a> and benchmarking them. This file saves the predicted bounding boxes for each scan as a JSON file.
 
+Here are performance metrics on two pretrained Faster-RCNN models from Detectron2's Model Zoo (all metrics reported are on the 20\% validation set in the repo using a single NVIDIA Tesla K80 GPU provided by Colab):
+
+| Model | average precision | inference time per image |
+| ----- | ----------------- | ------------------------ |
+|faster\_rcnn\_R\_50\_FPN\_3x | --- | 0.1 s / img|
+| faster\_rcnn\_X\_101\_32x8d\_FPN\_3x | 57.4 \% | 0.25 s / img |
+
 ## Extracting Captions and Textual Content using METZ/ALTO OCR
 
 Now that we have a finetuned model for extracting visual content from newspaper scans in *Chronicling America*, we can leverage the OCR of each scan to weakly supervise captions and corresponding textual content. Because *Beyond Words* volunteers were instructed to draw bounding boxes over corresponding textual content, the finetuned model has learned how to do this as well.  As a baseline approach, we can find all of the textual content that falls within each predicted bounding box. Note that this is precisely what happens in *Beyond Words* during the "Transcribe" step, where volunteers correct the OCR within each bounding box.  
