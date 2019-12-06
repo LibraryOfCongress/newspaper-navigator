@@ -1,6 +1,6 @@
 # Re-imagining *Beyond Words* with Deep Learning
 
-## By Benjamin Charles Germain Lee (LOC Innovator-in-Residence, 2020)
+## By Benjamin Charles Germain Lee
 
 
 ## Introduction
