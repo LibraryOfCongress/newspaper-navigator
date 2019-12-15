@@ -7,6 +7,9 @@
 
 This code base explores using the <a href="http://beyondwords.labs.loc.gov/#/">*Beyond Words*</a> crowdsourced annotations of photographs, illustrations, comics, cartoons, and maps from <a href="https://chroniclingamerica.loc.gov/">*Chronicling America*</a> to finetune a pre-trained object detection model to detect visual content in historical newspaper scans. This finetuned model can then be used as the first step in a pipeline for automating the extraction of visual content from *Chronicling America*, as well as captions and corresponding textual content from the METZ/ALTO OCR of each *Chronicling America* page. This code base also contains a script for visualizing the extracted photographs, illustrations, comics, cartoons, and maps from *Chronicling America* using ResNet-18 embeddings and T-SNE. If you'd like to read about this work in depth, feel free to read the PDF *here* ...
 
+## Whitepaper
+
+A whitepaper describing the progress made so far can be found in <a href="https://github.com/bcglee/beyond_words/tree/master/whitepaper">/whitepaper/</a>.  The paper contains a more detailed description of the code, benchmarks, and related work than what is found on this page.
 
 ## Dataset
 
@@ -50,5 +53,6 @@ One answer is to use image embeddings and T-SNE to cluster the images in 2D.  To
 
 
 The script <a href="https://github.com/bcglee/beyond_words/blob/master/generate_visualization.py">generate_visualization.py</a> contains all of my code for generating visualizations.  Note that it requires <a href="https://github.com/christiansafka/img2vec">img2vec</a> and scikit-learn.
+
 
 (This README will be updated as new commits are added).
