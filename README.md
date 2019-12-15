@@ -1,4 +1,4 @@
-# Re-imagining *Beyond Words* with Deep Learning
+# *Newspaper Navigator*
 
 ## By Benjamin Charles Germain Lee
 
@@ -59,4 +59,4 @@ For a sample visualization of June 7th, 1944 (the day after D-Day), please see <
 The script <a href="https://github.com/bcglee/beyond_words/blob/master/generate_visualization.py">generate_visualization.py</a> contains all of my code for generating visualizations.  Note that it requires <a href="https://github.com/christiansafka/img2vec">img2vec</a> and scikit-learn.
 
 
-(This README will be updated as new commits are added).
+(*This README will be updated as new commits are added*).
