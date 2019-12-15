@@ -39,7 +39,7 @@ Here are performance metrics on two pretrained Faster-RCNN models from Detectron
 |faster\_rcnn\_R\_50\_FPN\_3x | 56.1 \% | 0.1 s / img|
 | faster\_rcnn\_X\_101\_32x8d\_FPN\_3x | 57.4 \% | 0.25 s / img |
 
-For a slideshow showing the performance of faster\_rcnn\_R\_50\_FPN\_3x on sample pages from the *Beyond Words* test set, please see *INSERT FILEPATHS HERE*.
+For a slideshow showing the performance of faster\_rcnn\_R\_50\_FPN\_3x on 50 sample pages from the *Beyond Words* test set, please see <a href="https://github.com/bcglee/beyond_words/blob/master/demos/slideshow.mp4">/demos/slideshow.mp4</a>.
 
 ## Extracting Captions and Textual Content using METZ/ALTO OCR
 
@@ -53,7 +53,7 @@ Using the <a href="https://github.com/bcglee/chronam-get-images">chronam-get-ima
 
 One answer is to use image embeddings and T-SNE to cluster the images in 2D.  To accomplish this, I've used <a href="https://github.com/christiansafka/img2vec">img2vec</a>, a Python package that produces embeddings for images using ResNet-18 and AlexNet.  Here, I've chosen to use the 512-dimensional embeddings from ResNet-18 produced by feeding in an image and grabbing the weights in the last hidden layer.  Using sklearn's implementation of T-SNE, it's easy to perform dimensionality reduction down to 2D - perfect for a visualization. We can then visualize a day in history!
 
-For a sample visualization of June 7th, 1944 (the day after D-Day), please see: (*INSERT HERE!*).  If you search around in this visualization, you will find clusters of maps showing the Western Front, photographs of military action, and photographs of people.
+For a sample visualization of June 7th, 1944 (the day after D-Day), please see <a href="https://github.com/bcglee/beyond_words/blob/master/demos/visualizing_6_7_1944.png">/demos/visualizing_6_7_1944.png</a> (*NOTE: the image is 20 MB, enabling high resolution of images even when zooming in*).  If you search around in this visualization, you will find clusters of maps showing the Western Front, photographs of military action, and photographs of people.  Currently, the aspect ratio of the extracted visual content is not preserved, but this is to be added in future iterations.
 
 
 The script <a href="https://github.com/bcglee/beyond_words/blob/master/generate_visualization.py">generate_visualization.py</a> contains all of my code for generating visualizations.  Note that it requires <a href="https://github.com/christiansafka/img2vec">img2vec</a> and scikit-learn.
