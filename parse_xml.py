@@ -6,7 +6,7 @@ from PIL import Image, ImageDraw
 
 # given a file path and a list of bounding boxes, this function traverses the XML
 # and returns the OCR within each bounding box
-def retrieve_ocr(filepath, bounding_boxes, true_img_filepath, fullview_filepath):
+def retrieve_ocr(filepath, bounding_boxes, predicted_classes, true_img_filepath, fullview_filepath):
 
     # creates empty nested list fo storing OCR in each box
     ocr = [ [] for i in range(len(bounding_boxes)) ]
@@ -26,13 +26,13 @@ def retrieve_ocr(filepath, bounding_boxes, true_img_filepath, fullview_filepath)
     # finds all of the text boxes on the page
     text_boxes = print_space.findall(prefix + 'TextBlock')
 
-
     # gets page height and page width in inch1200 units
     page_height_inch = int(page.attrib['HEIGHT'])
     page_width_inch = int(page.attrib['WIDTH'])
 
     # opens the actual page
     im = Image.open(true_img_filepath)
+    im = im.convert(mode='RGB')
     draw  = ImageDraw.Draw(im)
 
     # sets page height and width in pixel units
@@ -61,15 +61,36 @@ def retrieve_ocr(filepath, bounding_boxes, true_img_filepath, fullview_filepath)
                 h2 = h1 + int(string.attrib["HEIGHT"])
 
                 area = ((w1*CONVERSION, h1*CONVERSION), (w2*CONVERSION, h2*CONVERSION))
-                draw.rectangle(area, fill="gray")
+                draw.rectangle(area, fill="#A9A9A9", outline="black")
 
                 # we now iterate over each bounding box and find whether the string lies within the box
                 for i in range(0, len(bounding_boxes)):
 
                     bounding_box = bounding_boxes[i]
+                    predicted_class = predicted_classes[i]
+
+                    name = ''
+                    color = ''
+                    if predicted_class == 0:
+                        name = 'Photograph'
+                        color = 'cyan'
+                    elif predicted_class == 1:
+                        name = 'Illustration'
+                        color = 'green'
+                    elif predicted_class == 2:
+                        name = 'Map'
+                        color = 'magenta'
+                    elif predicted_class == 3:
+                        name = 'Comics/Cartoon'
+                        color = 'purple'
+                    elif predicted_class == 4:
+                        name = 'Editorial Cartoon'
+                        color = 'brown'
 
                     # here, we can draw the bounding box if we'd like
-                    draw.rectangle(bounding_box, outline="black", fill=None)
+                    draw.rectangle(bounding_box, outline=color, fill=None, width=14)
+
+                    draw.text((bounding_box[0], bounding_box[1]), "   " + name, fill='black')
 
                     # checks if the text appears within the bounding box
                     if w1*CONVERSION > bounding_box[0]:
@@ -82,7 +103,7 @@ def retrieve_ocr(filepath, bounding_boxes, true_img_filepath, fullview_filepath)
 
                                     # if drawing on image, we can selectively only draw on cropped OCR
                                     area = ((w1*CONVERSION, h1*CONVERSION), (w2*CONVERSION, h2*CONVERSION))
-                                    draw.rectangle(area, fill="black")
+                                    draw.rectangle(area, fill="orange", outline="black")
 
     im.save(fullview_filepath)
 
@@ -115,8 +136,6 @@ for json_file in json_filepaths:
     xml_filepath = '../chronam-get-images/data/' + stem + '.xml'
     jpg_filepath = '../chronam-get-images/data/' + stem + '.jpg'
 
-    print(stem)
-
     # we also now construct destination filepaths
     cropped_filepath = 'tests/predictions/with_ocr/' + jpg_filepath.split('data')[1].replace('/', '_')[:-4]
 
@@ -140,12 +159,10 @@ for json_file in json_filepaths:
 
     # we only try to retrieve the OCR if there is one or more predicted box
     if n_pred > 0:
-        ocr = retrieve_ocr(xml_filepath, boxes, jpg_filepath, cropped_filepath + "_fulLview_" + str(i) + ".jpg")
+        ocr = retrieve_ocr(xml_filepath, boxes, classes, jpg_filepath, cropped_filepath + "_fulLview_" + str(i) + ".jpg")
 
     predictions['ocr'] = ocr
 
     # we save the updated JSON
     with open(cropped_filepath + '_predictions.json', 'w') as f:
         json.dump(predictions, f)
-
-    sys.exit()
