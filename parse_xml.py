@@ -92,11 +92,14 @@ def retrieve_ocr(filepath, bounding_boxes, predicted_classes, true_img_filepath,
 
                     draw.text((bounding_box[0], bounding_box[1]), "   " + name, fill='black')
 
+
                     # checks if the text appears within the bounding box
                     if w1*CONVERSION > bounding_box[0]:
-                        if w2*CONVERSION < bounding_box[0] + bounding_box[2]:
+                        # if w2*CONVERSION < bounding_box[0] + bounding_box[2]:
+                        if w2*CONVERSION < bounding_box[2]:
                             if h1*CONVERSION > bounding_box[1]:
-                                if h2*CONVERSION < bounding_box[1] + bounding_box[3]:
+                                # if h2*CONVERSION < bounding_box[1] + bounding_box[3]:
+                                if h2*CONVERSION < bounding_box[3]:
 
                                     # appends text content to list
                                     ocr[i].append(string.attrib["CONTENT"])
