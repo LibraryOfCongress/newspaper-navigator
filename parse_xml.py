@@ -6,7 +6,7 @@ from PIL import Image, ImageDraw
 
 # given a file path and a list of bounding boxes, this function traverses the XML
 # and returns the OCR within each bounding box
-def retrieve_ocr(filepath, bounding_boxes, true_img_filepath):
+def retrieve_ocr(filepath, bounding_boxes, true_img_filepath, fullview_filepath):
 
     # creates empty nested list fo storing OCR in each box
     ocr = [ [] for i in range(len(bounding_boxes)) ]
@@ -60,13 +60,16 @@ def retrieve_ocr(filepath, bounding_boxes, true_img_filepath):
                 w2 = w1 + int(string.attrib["WIDTH"])
                 h2 = h1 + int(string.attrib["HEIGHT"])
 
-                # area = ((w1*CONVERSION, h1*CONVERSION), (w2*CONVERSION, h2*CONVERSION))
-                # draw.rectangle(area, fill="red")
+                area = ((w1*CONVERSION, h1*CONVERSION), (w2*CONVERSION, h2*CONVERSION))
+                draw.rectangle(area, fill="gray")
 
                 # we now iterate over each bounding box and find whether the string lies within the box
                 for i in range(0, len(bounding_boxes)):
 
                     bounding_box = bounding_boxes[i]
+
+                    # here, we can draw the bounding box if we'd like
+                    draw.rectangle(bounding_box, outline="black", fill=None)
 
                     # checks if the text appears within the bounding box
                     if w1*CONVERSION > bounding_box[0]:
@@ -77,7 +80,11 @@ def retrieve_ocr(filepath, bounding_boxes, true_img_filepath):
                                     # appends text content to list
                                     ocr[i].append(string.attrib["CONTENT"])
 
-    # im.save("tests/sample/" + true_img_filepath[3:].replace("/", "_"))
+                                    # if drawing on image, we can selectively only draw on cropped OCR
+                                    area = ((w1*CONVERSION, h1*CONVERSION), (w2*CONVERSION, h2*CONVERSION))
+                                    draw.rectangle(area, fill="black")
+
+    im.save(fullview_filepath)
 
     return ocr
 
@@ -111,7 +118,11 @@ for json_file in json_filepaths:
     print(stem)
 
     # we also now construct destination filepaths
-    cropped_filepath = jpg_filepath.split('data')[0] + 'predicted/' + jpg_filepath.split('data')[1].replace('/', '_')[:-4]
+    cropped_filepath = 'tests/predictions/with_ocr/' + jpg_filepath.split('data')[1].replace('/', '_')[:-4]
+
+    # saves full image in directory for reference
+    im = Image.open(jpg_filepath)
+    im.save(cropped_filepath + "_full.jpg")
 
     # crops out the predicted bounding boxes
     # here, we don't need to worry about upsampling because we are usign the downsampled image
@@ -124,16 +135,17 @@ for json_file in json_filepaths:
         im = im.crop( (box[0], box[1], box[2], box[3]) )
         im.save(cropped_filepath + "_predicted_" + str(i) + ".jpg")
 
-
     # stores list of OCR
     ocr = []
 
     # we only try to retrieve the OCR if there is one or more predicted box
     if n_pred > 0:
-        ocr = retrieve_ocr(xml_filepath, boxes, jpg_filepath)
+        ocr = retrieve_ocr(xml_filepath, boxes, jpg_filepath, cropped_filepath + "_fulLview_" + str(i) + ".jpg")
 
     predictions['ocr'] = ocr
 
     # we save the updated JSON
     with open(cropped_filepath + '_predictions.json', 'w') as f:
         json.dump(predictions, f)
+
+    sys.exit()
