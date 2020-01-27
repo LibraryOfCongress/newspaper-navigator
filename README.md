@@ -1,11 +1,16 @@
 # *Newspaper Navigator*
 
-## By Benjamin Charles Germain Lee
+## By Benjamin Charles Germain Lee (2020 Library of Congress Innovator-in-Residence)
 
+## Note
 
 ## Introduction
 
-This code base explores using the <a href="http://beyondwords.labs.loc.gov/#/">*Beyond Words*</a> crowdsourced annotations of photographs, illustrations, comics, cartoons, and maps from <a href="https://chroniclingamerica.loc.gov/">*Chronicling America*</a> to finetune a pre-trained object detection model to detect visual content in historical newspaper scans. This finetuned model can then be used as the first step in a pipeline for automating the extraction of visual content from *Chronicling America*, as well as captions and corresponding textual content from the METZ/ALTO OCR of each *Chronicling America* page. This code base also contains a script for visualizing the extracted photographs, illustrations, comics, cartoons, and maps from *Chronicling America* using ResNet-18 embeddings and T-SNE.
+*Newspaper Navigator* is a project to re-imagine searching over <a href="https://chroniclingamerica.loc.gov/">*Chronicling America*</a>. The first stage of *Newspaper Navigator* is to extract content such as photographs, illustrations, cartoons, and news topics from the Chronicling America newspaper scans and corresponding OCR using emerging machine learning techniques. The second stage is to reimagine an exploratory search interface over the collection in order to enable a wide range of people to navigate the collection according to their interests. **This project is currently under development, and updates to the documentation will be made as the project unfolds throughout the year.**
+
+
+## What's Implemented So Far
+This code base explores using the <a href="http://beyondwords.labs.loc.gov/#/">*Beyond Words*</a> crowdsourced annotations of photographs, illustrations, comics, cartoons, and maps from <a href="https://chroniclingamerica.loc.gov/">*Chronicling America*</a> to finetune a pre-trained object detection model to detect visual content in historical newspaper scans. This finetuned model can then be used as the first step in a pipeline for automating the extraction of visual content from *Chronicling America*, as well as captions and corresponding textual content from the METS/ALTO OCR of each *Chronicling America* page. This code base also contains a script for visualizing the extracted photographs, illustrations, comics, cartoons, and maps from *Chronicling America* using ResNet-18 embeddings and T-SNE.
 
 ## Whitepaper
 
@@ -41,11 +46,11 @@ Here are performance metrics on two pretrained Faster-RCNN models from Detectron
 
 For a slideshow showing the performance of faster\_rcnn\_R\_50\_FPN\_3x on 50 sample pages from the *Beyond Words* test set, please see <a href="https://github.com/bcglee/beyond_words/blob/master/demos/slideshow.mp4">/demos/slideshow.mp4</a>.
 
-## Extracting Captions and Textual Content using METZ/ALTO OCR
+## Extracting Captions and Textual Content using METS/ALTO OCR
 
 Now that we have a finetuned model for extracting visual content from newspaper scans in *Chronicling America*, we can leverage the OCR of each scan to weakly supervise captions and corresponding textual content. Because *Beyond Words* volunteers were instructed to draw bounding boxes over corresponding textual content, the finetuned model has learned how to do this as well.  As a baseline approach, we can find all of the textual content that falls within each predicted bounding box. Note that this is precisely what happens in *Beyond Words* during the "Transcribe" step, where volunteers correct the OCR within each bounding box.  
 
-The script <a href="https://github.com/bcglee/beyond_words/blob/master/parse_xml.py">parse_xml.py</a> utilizes the predicted bounding boxes in JSON format to extract textual content within each predicted bounding box from the METZ/ALTO OCR XML file for each *Chronicling America* page.  The textual content is then added to the JSON. This script also uses PIL to crop the predicted bounding boxes from the newspaper scans to produce a set of extracted visual content.
+The script <a href="https://github.com/bcglee/beyond_words/blob/master/parse_xml.py">parse_xml.py</a> utilizes the predicted bounding boxes in JSON format to extract textual content within each predicted bounding box from the METS/ALTO OCR XML file for each *Chronicling America* page.  The textual content is then added to the JSON. This script also uses PIL to crop the predicted bounding boxes from the newspaper scans to produce a set of extracted visual content.
 
 ## Visualizing a Day in Newspaper History
 
