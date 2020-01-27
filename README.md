@@ -2,8 +2,6 @@
 
 ## By Benjamin Charles Germain Lee (2020 Library of Congress Innovator-in-Residence)
 
-## Note
-
 ## Introduction
 
 *Newspaper Navigator* is a project to re-imagine searching over <a href="https://chroniclingamerica.loc.gov/">*Chronicling America*</a>. The first stage of *Newspaper Navigator* is to extract content such as photographs, illustrations, cartoons, and news topics from the Chronicling America newspaper scans and corresponding OCR using emerging machine learning techniques. The second stage is to reimagine an exploratory search interface over the collection in order to enable a wide range of people to navigate the collection according to their interests. **This project is currently under development, and updates to the documentation will be made as the project unfolds throughout the year.**
