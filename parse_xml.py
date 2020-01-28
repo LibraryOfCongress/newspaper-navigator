@@ -136,11 +136,11 @@ for json_file in json_filepaths:
 
     # we now find the XML and JPG files corresponding to this predictions JSON
     stem = original_img_filepath[original_img_filepath.find('FullPages'):-4]
-    xml_filepath = '../chronam-get-images/data/' + stem + '.xml'
-    jpg_filepath = '../chronam-get-images/data/' + stem + '.jpg'
+    xml_filepath = './tests/raw_images/' + stem + '.xml'
+    jpg_filepath = './tests/raw_images/' + stem + '.jpg'
 
     # we also now construct destination filepaths
-    cropped_filepath = 'tests/predictions/with_ocr/' + jpg_filepath.split('data')[1].replace('/', '_')[:-4]
+    cropped_filepath = 'tests/with_ocr/' + jpg_filepath.split('raw_images')[1].replace('/', '_')[:-4]
 
     # saves full image in directory for reference
     im = Image.open(jpg_filepath)
