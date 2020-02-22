@@ -63,7 +63,22 @@ Currently under development is the notebook [process_chronam_pages.ipynb](https:
 2. perform inference on the images using the finetuned visual content detection model
 3. extract textual content within the predicted bounding boxes using the METS/ALTO XML files containing the OCR for each page
 4. generate embeddings for each image using [img2vec](https://github.com/christiansafka/img2vec) for fast similarity computations
-5. save the results for each page as a JSON file in a file tree that mirrors the *Chronicling America* file tree.
+5. save the results for each page as a JSON file in a file tree that mirrors the *Chronicling America* file tree.  If you navigate to *link to be added*, you will find a .zip file corresponding to each folder at:  https://chroniclingamerica.loc.gov/data/batches/ (each folder contains the data for a digitized newspaper batch, described [here](https://chroniclingamerica.loc.gov/batches/)).  If you unzip the file, you will find a JSON file corresponding to each page in the full batch.  The JSON file contains the following keys:
+
+* `filepath [str]`: the path to the image, assuming a starting point of https://chroniclingamerica.loc.gov/batches/
+* `pub_date [str]`: the publication date of the page, in the format `YYYY-MM-DD`
+* `boxes [list:list]`: a list containing the coordinates of predicted boxes in YOLO format
+* `scores [list:float]`: a list containing the confidence score associated with each box
+* `pred_classes [list:int]`: a list containing the predicted class for each box; the classes are:
+  1. Photograph
+  2. Illustration
+  3. Map
+  4. Comics/Cartoon
+  5. Editorial Cartoon
+  6. Headline
+  7. Advertisement
+* `ocr [list:str]`: a list containing the OCR within each box
+* `embeddings [list:list]`: a list containing the embedding for each image (except headlines, for which embeddings aren't generated)
 
 *Once this code is finalized, this section will be updated, and the resulting dataset will be released.*
 
