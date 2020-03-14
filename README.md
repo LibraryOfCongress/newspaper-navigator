@@ -36,7 +36,7 @@ In addition, annotations of headlines and advertisements were added to the datas
 
 If you would like to use only the verified *Beyond Words* data, just disregard the annotations with the labels "Headline" and "Advertisement" when processing.
 
-For an 80\%-20\% split of the dataset, see [/beyond_words_data/trainval_80_percent.json](https://github.com/bcglee/beyond_words/blob/master/beyond_words_data/trainval_80_percent.json) and [/beyond_words_data/test_80_percent.json](https://github.com/bcglee/beyond_words/blob/master/beyond_words_data/test_80_percent.json).  Lastly, the original verified annotations from the *Beyond Words* site can be found at [beyond_words_data/beyond_words.txt](https://github.com/bcglee/beyond_words/blob/master/beyond_words_data/beyond_words.txt).
+For an 80\%-20\% split of the dataset, see [/beyond_words_data/train_80_percent.json](https://github.com/bcglee/beyond_words/blob/master/beyond_words_data/train_80_percent.json) and [/beyond_words_data/val_20_percent.json](https://github.com/bcglee/beyond_words/blob/master/beyond_words_data/val_20_percent.json).  Lastly, the original verified annotations from the *Beyond Words* site can be found at [beyond_words_data/beyond_words.txt](https://github.com/bcglee/beyond_words/blob/master/beyond_words_data/beyond_words.txt).
 
 To construct the dataset using updated annotations, first update the annotations file from the Beyond Words website, then run the script [process_beyond_words_images_COCO.py](https://github.com/bcglee/beyond_words/blob/master/process_beyond_words_images_COCO.py).  To split perform a train-test split, run [test_train_split.py](https://github.com/bcglee/beyond_words/blob/master/test_train_split.py) with the training fraction specified within the script.
 
