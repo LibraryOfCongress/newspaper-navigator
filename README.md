@@ -82,7 +82,7 @@ Now that we have a finetuned model for extracting visual content from newspaper 
 
 ## A Pipeline for Running at Scale
 
-Currently under development is the notebook [process_chronam_pages.ipynb](https://github.com/bcglee/beyond_words/blob/master/notebooks/process_chronam_pages.ipynb), with the goal of being able to run the visual content recognition and caption extraction over millions of *Chronicling America* pages. This code relies on the repo [chronam-get-images](https://github.com/bcglee/chronam-get-images) to produce a manifest of Chronicling America files. These manifest files can be found in this repo; they serve as a convenient way of navigating the Newspaper Navigator dataset stored in an S3 bucket (coming soon...).
+Currently under development is the notebook [process_chronam_pages.ipynb](https://github.com/bcglee/beyond_words/blob/master/notebooks/process_chronam_pages.ipynb), with the goal of being able to run the visual content recognition and caption extraction over millions of *Chronicling America* pages. This code relies on the repo [chronam-get-images](https://github.com/bcglee/chronam-get-images) to produce manifests of each newspaper in Chronicling America. The .zip manifest files can be found in this repo in [/manifests/](https://github.com/bcglee/beyond_words/blob/master/manifests/); they serve as a convenient way of navigating the Newspaper Navigator dataset stored in an S3 bucket (coming soon...).
 
 This notebook then uses this manifest to:
 
