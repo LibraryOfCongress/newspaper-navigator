@@ -116,7 +116,7 @@ This notebook then uses this manifest to:
   7. Advertisement
 * `ocr [list:str]`: a list containing the OCR within each box
 * `embeddings [list:list]`: a list containing the embedding for each image (except headlines, for which embeddings aren't generated)
-* `img_filepaths [list:str]`: a list containing the filepath for each cropped image (except headlines, which were not cropped and saved)
+* `visual_content_filepaths [list:str]`: a list containing the filepath for each cropped image (except headlines, which were not cropped and saved)
 
 *Once this code is finalized, this section will be updated, and the resulting Newspaper Navigator dataset will be released.*
 
