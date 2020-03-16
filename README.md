@@ -12,7 +12,9 @@ The goal of *Newspaper Navigator* is to re-imagine searching over [*Chronicling 
 
 
 ## What's Implemented So Far
-This code base explores using the [*Beyond Words*](http://beyondwords.labs.loc.gov/#/) crowdsourced bounding box annotations of photographs, illustrations, comics, cartoons, and maps, as well as additional annotations of headlines and advertisements, to finetune a pre-trained object detection model to detect visual content in historical newspaper scans. This finetuned model is incorporated into a pipeline for extracting content from millions of newspaper pages in the *Chronicling America*.  This includes not only visual content but also captions and corresponding textual content from the METS/ALTO OCR of each *Chronicling America* page. In addition, the pipeline produces image embeddings for fast similarity querying over the extracted visual content.
+This code base explores using the [*Beyond Words*](http://beyondwords.labs.loc.gov/#/) crowdsourced bounding box annotations of photographs, illustrations, comics, cartoons, and maps, as well as additional annotations of headlines and advertisements, to finetune a pre-trained object detection model to detect visual content in historical newspaper scans. This finetuned model is incorporated into a pipeline for extracting content from millions of newspaper pages in the *Chronicling America*.  This includes not only visual content but also captions and corresponding textual content from the METS/ALTO OCR of each *Chronicling America* page. In addition, the pipeline produces image embeddings for fast similarity querying over the extracted visual content.  Here is a diagram of the pipeline workflow:
+
+![Alt text](demos/pipeline.pngraw=true "Title")
 
 ## Whitepaper
 
