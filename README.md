@@ -25,7 +25,7 @@ photographs, illustrations, comics, cartoons, and maps in World War I era newspa
 
 The dataset contains 3,437 images with 6,732 verified annotations (downloaded from the *Beyond Words* site on 12/01/2019), plus an additional 32,424 unverified annotations.  Here is a breakdown of categories:
 
-| Category | # in Validation Set |
+| Category | # in Full Dataset |
 | ----- | ----------------- |
 | Photograph | 4,193 |
 | Illustration | 1,028 |
@@ -37,7 +37,7 @@ The dataset contains 3,437 images with 6,732 verified annotations (downloaded fr
 
 If you would like to use only the verified *Beyond Words* data, just disregard the annotations with the labels "Headline" and "Advertisement" when processing.
 
-For an 80\%-20\% split of the dataset, see [/beyond_words_data/train_80_percent.json](https://github.com/LibraryOfCongress/newspaper-navigator/blob/master/beyond_words_data/train_80_percent.json) and [/beyond_words_data/val_20_percent.json](https://github.com/bcglee/LibraryOfCongress/newspaper-navigator/blob/master/beyond_words_data/val_20_percent.json).  Lastly, the original verified annotations from the *Beyond Words* site can be found at [beyond_words_data/beyond_words.txt](https://github.com/LibraryOfCongress/newspaper-navigator/blob/master/beyond_words_data/beyond_words.txt).
+For an 80\%-20\% split of the dataset, see [/beyond_words_data/train_80_percent.json](https://github.com/LibraryOfCongress/newspaper-navigator/blob/master/beyond_words_data/train_80_percent.json) and [/beyond_words_data/val_20_percent.json](https://github.com/LibraryOfCongress/newspaper-navigator/blob/master/beyond_words_data/val_20_percent.json).  Lastly, the original verified annotations from the *Beyond Words* site can be found at [beyond_words_data/beyond_words.txt](https://github.com/LibraryOfCongress/newspaper-navigator/blob/master/beyond_words_data/beyond_words.txt).
 
 To construct the dataset using the *Beyond Words* annotations added since 12/01/2019, first update the annotations file from the Beyond Words website, then run the script [process_beyond_words_dataset.py](https://github.com/LibraryOfCongress/newspaper-navigator/blob/master/process_beyond_words_dataset.py).  To add the additional headline and advertisement annotations, you can retrieve them from [/beyond_words_data/trainval.json](https://github.com/LibraryOfCongress/newspaper-navigator/blob/master/beyond_words_data/trainval.json) and add them to your dataset.
 
@@ -48,9 +48,9 @@ With this dataset fully constructed, it is possible to train a deep learning mod
 I have included scripts and notebooks designed to run out-of-the-box on most deep learning environments (tested on an *AWS EC2 instance* with a *Deep Learning Ubuntu AMI*). Below are the steps to get running on any deep learning environment with Python 3, PyTorch, and the standard scientific computing packages shipped with Anaconda:
 
 1. Clone this repo.
-2. Next, run [install_detectron_2.sh](https://github.com/LibraryOfCongress/newspaper-navigator/blob/master/install-scripts/install_detectron_2.sh) in order to install Detectron2, as well as all of its dependencies (including [img2vec](https://github.com/christiansafka/img2vec)). Due to some deprecated code in pycocotools, you may need to change "unicode" to "bytes" in line 308 of `~/anaconda3/lib/python3.6/site-packages/pycocotools/coco.py` in order to enable the test evaluation in Detectron2 to work correctly. If the above installation package fails, I recommend following the steps on the [Detectron2 repo](https://github.com/facebookresearch/detectron2/blob/master/INSTALL.md) for installation.
+2. Next, run [/install-scripts/install_detectron_2.sh](https://github.com/LibraryOfCongress/newspaper-navigator/blob/master/install-scripts/install_dependencies.sh) in order to install Detectron2, as well as all of its dependencies (including [img2vec](https://github.com/christiansafka/img2vec)). Due to some deprecated code in pycocotools, you may need to change "unicode" to "bytes" in line 308 of `~/anaconda3/lib/python3.6/site-packages/pycocotools/coco.py` in order to enable the test evaluation in Detectron2 to work correctly. If the above installation package fails, I recommend following the steps on the [Detectron2 repo](https://github.com/facebookresearch/detectron2/blob/master/INSTALL.md) for installation.
 
-To experiment with training your own visual content recognition model, run the command `jupyter notebook` and navigate to the notebook [train_model.ipynb](https://github.com/LibraryOfCongress/newspaper-navigator/blob/master/notebooks/train_model.ipynb), which contains code for finetuning Faster-RCNN implementations from [Detectron2's](https://github.com/facebookresearch/detectron2) [Model Zoo](https://github.com/facebookresearch/detectron2/blob/master/MODEL_ZOO.md). If everything is installed correctly, the notebook should run without any additional steps!
+To experiment with training your own visual content recognition model, run the command `jupyter notebook` and navigate to the notebook [/notebooks/train_model.ipynb](https://github.com/LibraryOfCongress/newspaper-navigator/blob/master/notebooks/train_model.ipynb), which contains code for finetuning Faster-RCNN implementations from [Detectron2's](https://github.com/facebookresearch/detectron2) [Model Zoo](https://github.com/facebookresearch/detectron2/blob/master/MODEL_ZOO.md). If everything is installed correctly, the notebook should run without any additional steps!
 
 
 ## Processing Your Own Newspaper Pages
@@ -70,7 +70,7 @@ Here are performance metrics on the model available for use; the model consists 
 | Headline | 71.5\% | 5,773 |
 | Advertisement | 75.6\% | 2,592 |
 
-For a slideshow showing the performance of this model on 50 sample pages from the *Beyond Words* test set, please see [slideshow.mp4](https://github.com/LibraryOfCongress/newspaper-navigator/blob/master/demos/slideshow.mp4).
+For a slideshow showing the performance of this model on 50 sample pages from the *Beyond Words* test set, please see [/demos/slideshow.mp4](https://github.com/LibraryOfCongress/newspaper-navigator/blob/master/demos/slideshow.mp4).
 
 *Note*: To use the model weights, import the model weights in PyTorch as usual, and set add following lines:
 
@@ -89,7 +89,7 @@ In order to generate search and recommendation results over similar visual conte
 
 ## A Pipeline for Running at Scale
 
-Currently under development is the notebook [process_chronam_pages.ipynb](https://github.com/LibraryOfCongress/newspaper-navigator/blob/master/notebooks/process_chronam_pages.ipynb), with the goal of being able to run the pipeline over millions of *Chronicling America* pages. This code relies on the repo [chronam-get-images](https://github.com/bcglee/chronam-get-images) to produce manifests of each newspaper in Chronicling America. Two .zip files containing the manifests can be found in this repo in [/manifests/](https://github.com/LibraryOfCongress/newspaper-navigator/blob/master/manifests/); they serve as a convenient way of navigating the Newspaper Navigator dataset stored in an S3 bucket (*coming soon...*).
+Currently under development is the notebook [/notebooks/process_chronam_pages.ipynb](https://github.com/LibraryOfCongress/newspaper-navigator/blob/master/notebooks/process_chronam_pages.ipynb), with the goal of being able to run the pipeline over millions of *Chronicling America* pages. This code relies on the repo [chronam-get-images](https://github.com/bcglee/chronam-get-images) to produce manifests of each newspaper in Chronicling America. Two .zip files containing the manifests can be found in this repo in [/manifests/](https://github.com/LibraryOfCongress/newspaper-navigator/blob/master/manifests/); they serve as a convenient way of navigating the Newspaper Navigator dataset stored in an S3 bucket (*coming soon...*).
 
 This notebook then uses this manifest to:
 
@@ -126,6 +126,6 @@ One answer is to use image embeddings and T-SNE to cluster the images in 2D.  To
 
 For a sample visualization of June 7th, 1944 (the day after D-Day), please see [visualizing_6_7_1944.png](https://github.com/LibraryOfCongress/newspaper-navigator/blob/master/demos/visualizing_6_7_1944.png) (*NOTE: the image is 20 MB, enabling high resolution of images even when zooming in*).  If you search around in this visualization, you will find clusters of maps showing the Western Front, photographs of military action, and photographs of people.  Currently, the aspect ratio of the extracted visual content is not preserved, but this is to be added in future iterations.
 
-The script [generate_visualization.py](https://github.com/LibraryOfCongress/newspaper-navigator/blob/master/generate_visualization.py) contains my code for generating the sample visualization, though it is not currently in a state of supporting out-of-the-box functionality.
+The script [/demos/generate_visualization.py](https://github.com/LibraryOfCongress/newspaper-navigator/blob/master/generate_visualization.py) contains my code for generating the sample visualization, though it is not currently in a state of supporting out-of-the-box functionality.
 
 (*This README will be updated as new commits are added*).
