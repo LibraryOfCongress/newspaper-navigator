@@ -13,5 +13,5 @@ git clone https://github.com/facebookresearch/detectron2
 cd detectron2
 python setup.py build develop
 
-# this is for the installation of img2vec_pytorch
-pip install img2vec_pytorch
+# this is for the installation of the forked version of img2vec_pytorch with ResNet-50 & ResNet-18 embeddings
+git clone https://github.com/bcglee/img2vec
