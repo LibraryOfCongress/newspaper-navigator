@@ -23,21 +23,22 @@ If you'd like to read about this work in depth, you can find a whitepaper descri
 ## Training Dataset for Visual Content Recognition in Historic Newspapers
 
 The [*Beyond Words*](http://beyondwords.labs.loc.gov/#/) dataset consists of crowdsourced locations of
-photographs, illustrations, comics, cartoons, and maps in World War I era newspapers, as well as corresponding textual content (titles, captions, artists, etc.). In order to utilize this dataset to train a visual content recognition model for historical newspaper scans, a copy of the dataset can be found in this repo (in [/beyond_words_data/](https://github.com/LibraryOfCongress/newspaper-navigator/tree/master/beyond_words_data)) formatted according to the [COCO](http://cocodataset.org/#format-data) standard for object detection. The images are stored in [/beyond_words_data/images/](https://github.com/LibraryOfCongress/newspaper-navigator/tree/master/beyond_words_data/images), and the JSON can be found in [/beyond_words_data/trainval.json](https://github.com/LibraryOfCongress/newspaper-navigator/blob/master/beyond_words_data/trainval.json). The JSON also includes annotations of headlines and advertisements. These annotations were all done by one person (myself) and thus are unverified. The breakdown is as follows:
+photographs, illustrations, comics, cartoons, and maps in World War I era newspapers, as well as corresponding textual content (titles, captions, artists, etc.). In order to utilize this dataset to train a visual content recognition model for historical newspaper scans, a copy of the dataset can be found in this repo (in [/beyond_words_data/](https://github.com/LibraryOfCongress/newspaper-navigator/tree/master/beyond_words_data)) formatted according to the [COCO](http://cocodataset.org/#format-data) standard for object detection. The images are stored in [/beyond_words_data/images/](https://github.com/LibraryOfCongress/newspaper-navigator/tree/master/beyond_words_data/images), and the JSON can be found in [/beyond_words_data/trainval.json](https://github.com/LibraryOfCongress/newspaper-navigator/blob/master/beyond_words_data/trainval.json). The JSON also includes annotations of headlines and advertisements, as well as annotations for additional pages with maps to boost the number of maps in the dataset. These annotations were all done by one person (myself) and thus are unverified. The breakdown is as follows:
 
 The dataset contains 3,437 images with 6,732 verified annotations (downloaded from the *Beyond Words* site on 12/01/2019), plus an additional 32,424 unverified annotations.  Here is a breakdown of categories:
 
 | Category | # in Full Dataset |
 | ----- | ----------------- |
-| Photograph | 4,193 |
-| Illustration | 1,028 |
-| Map | 79 |
-| Comics/Cartoon | 1,139 |
+| Photograph | 4,254 |
+| Illustration | 1,048 |
+| Map | 215 |
+| Comics/Cartoon | 1,150 |
 | Editorial Cartoon | 293 |
-| Headline | 21,692 |
-| Advertisement | 10,732 |
+| Headline | 27,868 |
+| Advertisement | 13,581 |
+| Total | 48,409 |
 
-If you would like to use only the verified *Beyond Words* data, just disregard the annotations with the labels "Headline" and "Advertisement" when processing.
+If you would like to use only the verified *Beyond Words* data, just disregard the headline and advertisement annotations, as well as the annotations for any image added after 12/1/2019.
 
 For an 80\%-20\% split of the dataset, see [/beyond_words_data/train_80_percent.json](https://github.com/LibraryOfCongress/newspaper-navigator/blob/master/beyond_words_data/train_80_percent.json) and [/beyond_words_data/val_20_percent.json](https://github.com/LibraryOfCongress/newspaper-navigator/blob/master/beyond_words_data/val_20_percent.json).  Lastly, the original verified annotations from the *Beyond Words* site can be found at [beyond_words_data/beyond_words.txt](https://github.com/LibraryOfCongress/newspaper-navigator/blob/master/beyond_words_data/beyond_words.txt).
 
@@ -64,14 +65,14 @@ Here are performance metrics on the model available for use; the model consists 
 
 | Category | Average Precision | # in Validation Set |
 | ----- | ----------------- | ----------------- |
-| Combined | 56.4\% | 9,632 |
-| Photograph | 56.5\% | 774 |
-| Illustration | 24.9\% | 200 |
-| Map | 58.7\% | 13 |
-| Comic/Cartoon | 58.8\% | 224 |
-| Editorial Cartoon | 48.7\% | 56 |
-| Headline | 71.5\% | 5,773 |
-| Advertisement | 75.6\% | 2,592 |
+| Combined | \% | 9,931 |
+| Photograph | \% | 879 |
+| Illustration | \% | 206 |
+| Map | \% | 34 |
+| Comic/Cartoon | \% | 211 |
+| Editorial Cartoon | \% | 54 |
+| Headline | \% | 5,689 |
+| Advertisement | \% | 2,858 |
 
 For a slideshow showing the performance of this model on 50 sample pages from the *Beyond Words* test set, please see [/demos/slideshow.mp4](https://github.com/LibraryOfCongress/newspaper-navigator/blob/master/demos/slideshow.mp4).
 
@@ -116,7 +117,7 @@ This notebook then uses this manifest to:
   6. Headline
   7. Advertisement
 * `ocr [list:str]`: a list containing the OCR within each box
-* `visual_content_filepaths [list:str]`: a list containing the filepath for each cropped image (except headlines, which were not cropped and saved)
+* `visual_content_filepaths [list:str]`: a list containing the filepath for each cropped image (except headlines, which were not cropped and saved). Note that the predicted class is encoded in the name right before ".jpg".
 
 The second JSON file (with "embeddings" in the name) contains the following keys:
 * `filepath [str]`: the path to the image, assuming a starting point of https://chroniclingamerica.loc.gov/batches/
