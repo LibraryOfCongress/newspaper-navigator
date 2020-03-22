@@ -74,7 +74,7 @@ Here are performance metrics on the model available for use; the model consists 
 | Headline | \% | 5,689 |
 | Advertisement | \% | 2,858 |
 
-For a slideshow showing the performance of this model on 50 sample pages from the *Beyond Words* test set, please see [/demos/slideshow.mp4](https://github.com/LibraryOfCongress/newspaper-navigator/blob/master/demos/slideshow.mp4).
+For slideshows showing the performance of this model on 50 sample pages from the *Beyond Words* test set, please see [/demos/slideshow_predictions_filtered.mp4](https://github.com/LibraryOfCongress/newspaper-navigator/blob/master/demos/slideshow_predictions_filtered.mp4) (for the predictions filtered with a threshold cut of 0.5 on confidence score) and [/demos/slideshow_predictions_unfiltered.mp4](https://github.com/LibraryOfCongress/newspaper-navigator/blob/master/demos/slideshow_predictions_unfiltered.mp4) (for the predictions with a very low, default threshold cut of 0.05 on confidence score).
 
 *Note*: To use the model weights, import the model weights in PyTorch as usual, and set add following lines:
 
