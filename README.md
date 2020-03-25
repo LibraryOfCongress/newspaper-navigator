@@ -51,8 +51,8 @@ With this dataset fully constructed, it is possible to train a deep learning mod
 I have included scripts and notebooks designed to run out-of-the-box on most deep learning environments (tested on an *AWS EC2 instance* with a *Deep Learning Ubuntu AMI*). Below are the steps to get running on any deep learning environment with Python 3, PyTorch, and the standard scientific computing packages shipped with Anaconda:
 
 1. Clone this repo.
-2. Next, run [/install-scripts/install_detectron_2.sh](https://github.com/LibraryOfCongress/newspaper-navigator/blob/master/install-scripts/install_dependencies.sh) in order to install Detectron2, as well as all of its dependencies (including a forked version of [img2vec](https://github.com/bcglee/img2vec)) that I modifyed to include ResNet-50 embedding capabilities). Due to some deprecated code in pycocotools, you may need to change "unicode" to "bytes" in line 308 of `~/anaconda3/lib/python3.6/site-packages/pycocotools/coco.py` in order to enable the test evaluation in Detectron2 to work correctly. If the above installation package fails, I recommend following the steps on the [Detectron2 repo](https://github.com/facebookresearch/detectron2/blob/master/INSTALL.md) for installation.
-3. Next, `cd img2vec` and run `python setup.py install`.
+2. Next, run [/install-scripts/install_detectron_2.sh](https://github.com/LibraryOfCongress/newspaper-navigator/blob/master/install-scripts/install_dependencies.sh) in order to install Detectron2, as well as all of its dependencies. Due to some deprecated code in pycocotools, you may need to change "unicode" to "bytes" in line 308 of `~/anaconda3/lib/python3.6/site-packages/pycocotools/coco.py` in order to enable the test evaluation in Detectron2 to work correctly. If the above installation package fails, I recommend following the steps on the [Detectron2 repo](https://github.com/facebookresearch/detectron2/blob/master/INSTALL.md) for installation.
+3. For the pipeline code, you'll need to clone a forked version of [img2vec](https://github.com/bcglee/img2vec) that I modified to include ResNet-50 embedding functionality. Then `cd img2vec` and run `python setup.py install`.
 
 To experiment with training your own visual content recognition model, run the command `jupyter notebook` and navigate to the notebook [/notebooks/train_model.ipynb](https://github.com/LibraryOfCongress/newspaper-navigator/blob/master/notebooks/train_model.ipynb), which contains code for finetuning Faster-RCNN implementations from [Detectron2's](https://github.com/facebookresearch/detectron2) [Model Zoo](https://github.com/facebookresearch/detectron2/blob/master/MODEL_ZOO.md) - the notebook is pre-populated with the output from training the model for 10 epochs (scroll down to the bottom to see some sample predictions). If everything is installed correctly, the notebook should run without any additional steps!
 
@@ -94,19 +94,25 @@ In order to generate search and recommendation results over similar visual conte
 
 ## A Pipeline for Running at Scale
 
-Currently under development is the notebook [/notebooks/process_chronam_pages.ipynb](https://github.com/LibraryOfCongress/newspaper-navigator/blob/master/notebooks/process_chronam_pages.ipynb), with the goal of being able to run the pipeline over millions of *Chronicling America* pages. This code relies on the repo [chronam-get-images](https://github.com/bcglee/chronam-get-images) to produce manifests of each newspaper in Chronicling America. Two .zip files containing the manifests can be found in this repo in [/manifests/](https://github.com/LibraryOfCongress/newspaper-navigator/blob/master/manifests/); they serve as a convenient way of navigating the Newspaper Navigator dataset stored in an S3 bucket (*coming soon...*).
+The pipeline code for processing 16.3 million *Chronicling America* pages can be found in [/notebooks/process_chronam_pages.ipynb](https://github.com/LibraryOfCongress/newspaper-navigator/blob/master/notebooks/process_chronam_pages.ipynb). This code relies on the repo [chronam-get-images](https://github.com/bcglee/chronam-get-images) to produce manifests of each newspaper [batch](https://chroniclingamerica.loc.gov/batches/) in Chronicling America. A .zip file containing the manifests can be found in this repo in [manifests.zip](https://github.com/LibraryOfCongress/newspaper-navigator/blob/master/manifests.zip).
 
-This notebook then uses this manifest to:
+This notebook then:
 
-1. iterate over images in each *Chronicling America* manifest
-2. perform inference on the images using the finetuned visual content detection model
-3. crop and save the identified visual content (minus headlines)
-4. extract textual content within the predicted bounding boxes using the METS/ALTO XML files containing the OCR for each page
-5. generate ResNet-18 & ResNet-50 embeddings for each cropped image using a forked version of [img2vec](https://github.com/bcglee/img2vec) for fast similarity querying
-6. save the results for each page as a JSON file in a file tree that mirrors the *Chronicling America* file tree.  If you navigate to *link coming soon*, you will find a .zip file corresponding to each folder at:  https://chroniclingamerica.loc.gov/data/batches/ (each folder contains the data for a digitized newspaper batch, described [here](https://chroniclingamerica.loc.gov/batches/)).  If you unzip the file, you will find two JSON file corresponding to each page in the full batch.  The first JSON file (without "embeddings" in the name) contains the following keys:
+1. downloads the image and corresponding OCR for each newspaper page in each *Chronicling America* batch directly from the corresponding S3 buckets (*note*: you can alternatively download Chronicling America pages using [chronam-get-images](https://github.com/bcglee/chronam-get-images))
+2. performs inference on the images using the finetuned visual content detection model
+3. crops and saves the identified visual content (minus headlines)
+4. extracts textual content within the predicted bounding boxes using the METS/ALTO XML files containing the OCR for each page
+5. generates ResNet-18 and ResNet-50 embeddings for each cropped image using a forked version of [img2vec](https://github.com/bcglee/img2vec) for fast similarity querying
+6. saves the results for each page as a JSON file in a file tree that mirrors the *Chronicling America* file tree.  
+
+If you navigate to *link coming soon*, you will find the Newspaper Navigator dataset, which is indexed in the same manner as  https://chroniclingamerica.loc.gov/data/batches/ (each folder contains the data for a digitized newspaper batch, described [here](https://chroniclingamerica.loc.gov/batches/)).  If you replace the filepath for an image with `.json` and index into the dataset, you will find a JSON file corresponding to each page containing the following keys:
 
 * `filepath [str]`: the path to the image, assuming a starting point of https://chroniclingamerica.loc.gov/batches/
+* `batch [str]`: the Chronicling America batch containing this newspaper page
+* `lccn [str]`: the LCCN for the newspaper in which the page appears
 * `pub_date [str]`: the publication date of the page, in the format `YYYY-MM-DD`
+* `edition_seq_num [int]`: the edition sequence number
+* `page_seq_num [int]`: the page sequence number
 * `boxes [list:list]`: a list containing the coordinates of predicted boxes in YOLO format
 * `scores [list:float]`: a list containing the confidence score associated with each box
 * `pred_classes [list:int]`: a list containing the predicted class for each box; the classes are:
@@ -118,10 +124,11 @@ This notebook then uses this manifest to:
   6. Headline
   7. Advertisement
 * `ocr [list:str]`: a list containing the OCR within each box
-* `visual_content_filepaths [list:str]`: a list containing the filepath for each cropped image (except headlines, which were not cropped and saved). Note that the predicted class is encoded in the name right before ".jpg".
+* `visual_content_filepaths [list:str]`: a list containing the filepath for all of the cropped visual content (except headlines, which were not cropped and saved). Note that the file name is formatted as `[image_number]_[predicted class]_[confidence score (percent)].jpg`.
 
-The second JSON file (with "embeddings" in the name) contains the following keys:
-* `filepath [str]`: the path to the image, assuming a starting point of https://chroniclingamerica.loc.gov/batches/
+If you then access the folder corresponding to the image, you will find the cropped visual content with the file names described in the JSON file. In this folder, you will also find `embeddings.json`, which contains the embeddings for all of the visual content (except headlines) with confidence scores greater than 50\% (this threshold cut was made to limit the runtime of the pipeline). `embeddings.json` is structured as follows:
+
+* `filepath [str]`: the path to the scan of the newspaper page, assuming a starting point of https://chroniclingamerica.loc.gov/data/batches/
 * `resnet_50_embeddings [list:list]`: a list containing the 2,048-dimensional ResNet-50 embedding for each image (except headlines, for which embeddings aren't generated)
 * `resnet_18_embeddings [list:list]`: a list containing the 512-dimensional ResNet-50 embedding for each image (except headlines, for which embeddings aren't generated)
 * `visual_content_filepaths [list:str]`: a list containing the filepath for each cropped image (except headlines, which were not cropped and saved)
