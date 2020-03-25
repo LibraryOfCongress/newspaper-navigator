@@ -65,14 +65,15 @@ Here are performance metrics on the model available for use; the model consists 
 
 | Category | Average Precision | # in Validation Set |
 | ----- | ----------------- | ----------------- |
-| Combined | \% | 9,931 |
-| Photograph | \% | 879 |
-| Illustration | \% | 206 |
-| Map | \% | 34 |
-| Comic/Cartoon | \% | 211 |
-| Editorial Cartoon | \% | 54 |
-| Headline | \% | 5,689 |
-| Advertisement | \% | 2,858 |
+| Photograph | 61.6\% | 879 |
+| Illustration | 30.9\% | 206 |
+| Map | 69.5\% | 34 |
+| Comic/Cartoon | 65.6\% | 211 |
+| Editorial Cartoon | 63.0\% | 54 |
+| Headline | 74.3\% | 5,689 |
+| Advertisement | 78.7\% | 2,858 |
+| Combined | 63.4\% | 9,931 |
+
 
 For slideshows showing the performance of this model on 50 sample pages from the *Beyond Words* test set, please see [/demos/slideshow_predictions_filtered.mp4](https://github.com/LibraryOfCongress/newspaper-navigator/blob/master/demos/slideshow_predictions_filtered.mp4) (for the predictions filtered with a threshold cut of 0.5 on confidence score) and [/demos/slideshow_predictions_unfiltered.mp4](https://github.com/LibraryOfCongress/newspaper-navigator/blob/master/demos/slideshow_predictions_unfiltered.mp4) (for the predictions with a very low, default threshold cut of 0.05 on confidence score).
 
