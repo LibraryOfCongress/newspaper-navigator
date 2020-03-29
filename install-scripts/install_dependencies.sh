@@ -12,9 +12,3 @@ pip install -U 'git+https://github.com/facebookresearch/fvcore.git' 'git+https:/
 git clone https://github.com/facebookresearch/detectron2
 cd detectron2
 python setup.py build develop
-
-# this is for the installation of the forked version of img2vec_pytorch with ResNet-50 & ResNet-18 embeddings
-git clone https://github.com/bcglee/img2vec
-
-# this installs graphicsmagick for JP2 conversion in the pipeline
-apt-get install graphicsmagick
