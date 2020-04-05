@@ -52,7 +52,8 @@ I have included scripts and notebooks designed to run out-of-the-box on most dee
 
 1. Clone this repo.
 2. Next, run [/install-scripts/install_detectron_2.sh](https://github.com/LibraryOfCongress/newspaper-navigator/blob/master/install-scripts/install_dependencies.sh) in order to install Detectron2, as well as all of its dependencies. Due to some deprecated code in pycocotools, you may need to change "unicode" to "bytes" in line 308 of `~/anaconda3/lib/python3.6/site-packages/pycocotools/coco.py` in order to enable the test evaluation in Detectron2 to work correctly. If the above installation package fails, I recommend following the steps on the [Detectron2 repo](https://github.com/facebookresearch/detectron2/blob/master/INSTALL.md) for installation.
-3. For the pipeline code, you'll need to clone a forked version of [img2vec](https://github.com/bcglee/img2vec) that I modified to include ResNet-50 embedding functionality. Then `cd img2vec` and run `python setup.py install`.
+3. For the pipeline code, you'll need to clone a forked version of [img2vec](https://github.com/bcglee/img2vec) that I modified to include ResNet-50 embedding functionality. Then `cd img2vec` and run `python setup.py install`.  
+4. For the pipeline code, you'll also need to install graphicsmagick for converting JPEG-2000 images to JPEG images.  Run `sudo apt-get install graphicsmagick` to install it.
 
 To experiment with training your own visual content recognition model, run the command `jupyter notebook` and navigate to the notebook [/notebooks/train_model.ipynb](https://github.com/LibraryOfCongress/newspaper-navigator/blob/master/notebooks/train_model.ipynb), which contains code for finetuning Faster-RCNN implementations from [Detectron2's](https://github.com/facebookresearch/detectron2) [Model Zoo](https://github.com/facebookresearch/detectron2/blob/master/MODEL_ZOO.md) - the notebook is pre-populated with the output from training the model for 10 epochs (scroll down to the bottom to see some sample predictions). If everything is installed correctly, the notebook should run without any additional steps!
 
@@ -113,7 +114,7 @@ If you navigate to *link coming soon*, you will find the Newspaper Navigator dat
 * `pub_date [str]`: the publication date of the page, in the format `YYYY-MM-DD`
 * `edition_seq_num [int]`: the edition sequence number
 * `page_seq_num [int]`: the page sequence number
-* `boxes [list:list]`: a list containing the coordinates of predicted boxes in YOLO format
+* `boxes [list:list]`: a list containing the coordinates of predicted boxes indexed according to [x1, y1, width, height], where (x1, y1) is the top-left corner of the box relative to the standard image origin.
 * `scores [list:float]`: a list containing the confidence score associated with each box
 * `pred_classes [list:int]`: a list containing the predicted class for each box; the classes are:
   1. Photograph
@@ -133,7 +134,9 @@ If you then access the folder corresponding to the image, you will find the crop
 * `resnet_18_embeddings [list:list]`: a list containing the 512-dimensional ResNet-50 embedding for each image (except headlines, for which embeddings aren't generated)
 * `visual_content_filepaths [list:str]`: a list containing the filepath for each cropped image (except headlines, which were not cropped and saved)
 
-*Once this code is finalized, this section will be updated, and the resulting Newspaper Navigator dataset will be released.*
+**Note**: to run the pipeline, you must convert the notebook to a Python script, which can be done with the command:  `jupyter nbconvert --to script process_chronam_pages.ipynb`.  This is necessary because the code is heavily parallelized using multiprocessing, and the cell execution in Jupyter notebooks present conflicts.
+
+*Once the pipeline finishes running, the resulting Newspaper Navigator dataset will be released.*
 
 ## Visualizing a Day in Newspaper History
 
