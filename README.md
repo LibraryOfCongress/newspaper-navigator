@@ -114,7 +114,7 @@ If you navigate to *link coming soon*, you will find the Newspaper Navigator dat
 * `pub_date [str]`: the publication date of the page, in the format `YYYY-MM-DD`
 * `edition_seq_num [int]`: the edition sequence number
 * `page_seq_num [int]`: the page sequence number
-* `boxes [list:list]`: a list containing the coordinates of predicted boxes indexed according to [x1, y1, width, height], where (x1, y1) is the top-left corner of the box relative to the standard image origin.
+* `boxes [list:list]`: a list containing the coordinates of predicted boxes indexed according to [x1, y1, x2, y2], where (x1, y1) is the top-left corner of the box relative to the standard image origin, and (x2, y2) is the bottom-right corner.
 * `scores [list:float]`: a list containing the confidence score associated with each box
 * `pred_classes [list:int]`: a list containing the predicted class for each box; the classes are:
   1. Photograph
