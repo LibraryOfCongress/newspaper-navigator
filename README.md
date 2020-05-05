@@ -5,25 +5,30 @@
 ## Introduction
 
 The goal of *Newspaper Navigator* is to re-imagine searching over [*Chronicling America*](https://chroniclingamerica.loc.gov/about/). The project consists of two stages:
-- Creating the *Newspaper Navigator* dataset by extracting headlines, photographs, illustrations, maps, comics, cartoons, and advertisements from millions of Chronicling America pages using emerging machine learning techniques.  In addition to the visual content, the dataset will include captions and other relevant text derived from the METS/ALTO OCR, as well as image embeddings for fast similarity querying. The dataset will be released shortly.
-- Reimagining an exploratory search interface over the collection in order to enable new ways for the American public to navigate the collection.
+- Creating the *Newspaper Navigator* dataset by extracting headlines, photographs, illustrations, maps, comics, cartoons, and advertisements from 16.3 million historic newspaper pages in Chronicling America using emerging machine learning techniques.  In addition to the visual content, the dataset will include captions and other relevant text derived from the METS/ALTO OCR, as well as image embeddings for fast similarity querying. *This is now complete (see below)!*
+- Reimagining an exploratory search interface over the Newspaper Navigator dataset in order to enable new ways for the American public to navigate Chronicling America.
 
 **This project is currently under development, and updates to the documentation will be made as the project unfolds throughout the year.**
 
+## The Newspaper Navigator Dataset
 
-## What's Implemented So Far
-This code base explores using the [*Beyond Words*](http://beyondwords.labs.loc.gov/#/) crowdsourced bounding box annotations of photographs, illustrations, comics, cartoons, and maps, as well as additional annotations of headlines and advertisements, to finetune a pre-trained object detection model to detect visual content in historical newspaper scans. This finetuned model is incorporated into a pipeline for extracting content from millions of newspaper pages in the *Chronicling America*.  This includes not only visual content but also captions and corresponding textual content from the METS/ALTO OCR of each *Chronicling America* page. In addition, the pipeline produces image embeddings for fast similarity querying over the extracted visual content.  Here is a diagram of the pipeline workflow:
+Update (05/05/2020): The pipeline has finished running processing 16,368,041 Chronicling America pages, and the Newspaper Navigator dataset is about to be launched! Learn more about the dataset here: [https://arxiv.org/abs/2005.01583](https://arxiv.org/abs/2005.01583)
+
+You can also find the PDF in the repo [here](https://github.com/LibraryOfCongress/newspaper-navigator/tree/master/whitepaper).
+
+The link to the landing page for the dataset with documentation and demos will be added here over the coming days!
+
+
+## The Pipeline:
+
+The sections below describe the different components of building the Newspaper Navigator pipeline. Here is a diagram of the pipeline workflow:
 
 ![Alt text](demos/pipeline.png?raw=true "Title")
 
-## Whitepaper
-
-If you'd like to read about this work in depth, you can find a whitepaper describing the progress made so far in [whitepaper](https://github.com/LibraryOfCongress/newspaper-navigator/tree/master/whitepaper). The paper contains a more detailed description of the code, benchmarks, and related work (*this whitepaper will be updated within soon, when the Newspaper Navigator dataset is released*).
 
 ## Training Dataset for Visual Content Recognition in Historic Newspapers
 
-The [*Beyond Words*](http://beyondwords.labs.loc.gov/#/) dataset consists of crowdsourced locations of
-photographs, illustrations, comics, cartoons, and maps in World War I era newspapers, as well as corresponding textual content (titles, captions, artists, etc.). In order to utilize this dataset to train a visual content recognition model for historical newspaper scans, a copy of the dataset can be found in this repo (in [/beyond_words_data/](https://github.com/LibraryOfCongress/newspaper-navigator/tree/master/beyond_words_data)) formatted according to the [COCO](http://cocodataset.org/#format-data) standard for object detection. The images are stored in [/beyond_words_data/images/](https://github.com/LibraryOfCongress/newspaper-navigator/tree/master/beyond_words_data/images), and the JSON can be found in [/beyond_words_data/trainval.json](https://github.com/LibraryOfCongress/newspaper-navigator/blob/master/beyond_words_data/trainval.json). The JSON also includes annotations of headlines and advertisements, as well as annotations for additional pages with maps to boost the number of maps in the dataset. These annotations were all done by one person (myself) and thus are unverified. The breakdown is as follows:
+The first step in the pipeline is creating a training dataset for visual content recognition. The [*Beyond Words*](hhttps://labs.loc.gov/work/experiments/beyond-words/) dataset consists of crowdsourced locations of photographs, illustrations, comics, cartoons, and maps in World War I era newspapers, as well as corresponding textual content (titles, captions, artists, etc.). In order to utilize this dataset to train a visual content recognition model for historical newspaper scans, a copy of the dataset can be found in this repo (in [/beyond_words_data/](https://github.com/LibraryOfCongress/newspaper-navigator/tree/master/beyond_words_data)) formatted according to the [COCO](http://cocodataset.org/#format-data) standard for object detection. The images are stored in [/beyond_words_data/images/](https://github.com/LibraryOfCongress/newspaper-navigator/tree/master/beyond_words_data/images), and the JSON can be found in [/beyond_words_data/trainval.json](https://github.com/LibraryOfCongress/newspaper-navigator/blob/master/beyond_words_data/trainval.json). The JSON also includes annotations of headlines and advertisements, as well as annotations for additional pages with maps to boost the number of maps in the dataset. These annotations were all done by one person (myself) and thus are unverified. The breakdown is as follows:
 
 The dataset contains 3,437 images with 6,732 verified annotations (downloaded from the *Beyond Words* site on 12/01/2019), plus an additional 32,424 unverified annotations.  Here is a breakdown of categories:
 
@@ -106,37 +111,7 @@ This notebook then:
 5. generates ResNet-18 and ResNet-50 embeddings for each cropped image using a forked version of [img2vec](https://github.com/bcglee/img2vec) for fast similarity querying
 6. saves the results for each page as a JSON file in a file tree that mirrors the *Chronicling America* file tree.  
 
-If you navigate to *link coming soon*, you will find the Newspaper Navigator dataset, which is indexed in the same manner as  https://chroniclingamerica.loc.gov/data/batches/ (each folder contains the data for a digitized newspaper batch, described [here](https://chroniclingamerica.loc.gov/batches/)).  If you replace the filepath for an image with `.json` and index into the dataset, you will find a JSON file corresponding to each page containing the following keys:
-
-* `filepath [str]`: the path to the image, assuming a starting point of https://chroniclingamerica.loc.gov/batches/
-* `batch [str]`: the Chronicling America batch containing this newspaper page
-* `lccn [str]`: the LCCN for the newspaper in which the page appears
-* `pub_date [str]`: the publication date of the page, in the format `YYYY-MM-DD`
-* `edition_seq_num [int]`: the edition sequence number
-* `page_seq_num [int]`: the page sequence number
-* `boxes [list:list]`: a list containing the coordinates of predicted boxes indexed according to [x1, y1, x2, y2], where (x1, y1) is the top-left corner of the box relative to the standard image origin, and (x2, y2) is the bottom-right corner.
-* `scores [list:float]`: a list containing the confidence score associated with each box
-* `pred_classes [list:int]`: a list containing the predicted class for each box; the classes are:
-  1. Photograph
-  2. Illustration
-  3. Map
-  4. Comics/Cartoon
-  5. Editorial Cartoon
-  6. Headline
-  7. Advertisement
-* `ocr [list:str]`: a list containing the OCR within each box
-* `visual_content_filepaths [list:str]`: a list containing the filepath for all of the cropped visual content (except headlines, which were not cropped and saved). Note that the file name is formatted as `[image_number]_[predicted class]_[confidence score (percent)].jpg`.
-
-If you then access the folder corresponding to the image, you will find the cropped visual content with the file names described in the JSON file. In this folder, you will also find `embeddings.json`, which contains the embeddings for all of the visual content (except headlines) with confidence scores greater than 50\% (this threshold cut was made to limit the runtime of the pipeline). `embeddings.json` is structured as follows:
-
-* `filepath [str]`: the path to the scan of the newspaper page, assuming a starting point of https://chroniclingamerica.loc.gov/data/batches/
-* `resnet_50_embeddings [list:list]`: a list containing the 2,048-dimensional ResNet-50 embedding for each image (except headlines, for which embeddings aren't generated)
-* `resnet_18_embeddings [list:list]`: a list containing the 512-dimensional ResNet-50 embedding for each image (except headlines, for which embeddings aren't generated)
-* `visual_content_filepaths [list:str]`: a list containing the filepath for each cropped image (except headlines, which were not cropped and saved)
-
 **Note**: to run the pipeline, you must convert the notebook to a Python script, which can be done with the command:  `jupyter nbconvert --to script process_chronam_pages.ipynb`.  This is necessary because the code is heavily parallelized using multiprocessing, and the cell execution in Jupyter notebooks present conflicts.
-
-*Once the pipeline finishes running, the resulting Newspaper Navigator dataset will be released.*
 
 ## Visualizing a Day in Newspaper History
 
@@ -147,5 +122,7 @@ One answer is to use image embeddings and T-SNE to cluster the images in 2D.  To
 For a sample visualization of June 7th, 1944 (the day after D-Day), please see [visualizing_6_7_1944.png](https://github.com/LibraryOfCongress/newspaper-navigator/blob/master/demos/visualizing_6_7_1944.png) (*NOTE: the image is 20 MB, enabling high resolution of images even when zooming in*).  If you search around in this visualization, you will find clusters of maps showing the Western Front, photographs of military action, and photographs of people.  Currently, the aspect ratio of the extracted visual content is not preserved, but this is to be added in future iterations.
 
 The script [/demos/generate_visualization.py](https://github.com/LibraryOfCongress/newspaper-navigator/blob/master/generate_visualization.py) contains my code for generating the sample visualization, though it is not currently in a state of supporting out-of-the-box functionality.
+
+More to follow on the visualizations soon!
 
 (*This README will be updated as new commits are added*).
