@@ -12,9 +12,11 @@ The goal of *Newspaper Navigator* is to re-imagine searching over [*Chronicling 
 
 ## The Newspaper Navigator Dataset
 
-Update (05/05/2020): The pipeline has finished running processing 16,368,041 Chronicling America pages, and the Newspaper Navigator dataset is about to be launched! Learn more about the dataset here: [https://arxiv.org/abs/2005.01583](https://arxiv.org/abs/2005.01583)
+Update (05/05/2020): The pipeline has finished processing 16,368,041 Chronicling America pages, and the Newspaper Navigator dataset is about to be launched! 
 
-You can also find the PDF in the repo [here](https://github.com/LibraryOfCongress/newspaper-navigator/tree/master/whitepaper).
+Learn more about the dataset in a paper available here: [https://arxiv.org/abs/2005.01583](https://arxiv.org/abs/2005.01583)
+
+You can also find the PDF of the paper in the repo [here](https://github.com/LibraryOfCongress/newspaper-navigator/tree/master/whitepaper).
 
 The link to the landing page for the dataset with documentation and demos will be added here over the coming days!
 
