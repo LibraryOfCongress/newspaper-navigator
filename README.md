@@ -12,14 +12,11 @@ The goal of *Newspaper Navigator* is to re-imagine searching over [*Chronicling 
 
 ## The Newspaper Navigator Dataset
 
-Update (05/05/2020): The pipeline has finished processing 16,368,041 Chronicling America pages, and the Newspaper Navigator dataset is about to be launched! 
+**Update (05/05/2020): The pipeline has finished processing 16,368,041 Chronicling America pages, and the Newspaper Navigator dataset is available to the public! You can find the Newspaper Navigator dataset website here: [https://news-navigator.labs.loc.gov/](https://news-navigator.labs.loc.gov).**
 
-Learn more about the dataset in a paper available here: [https://arxiv.org/abs/2005.01583](https://arxiv.org/abs/2005.01583)
+**Learn more about the dataset and its construction in a paper available here: [https://arxiv.org/abs/2005.01583](https://arxiv.org/abs/2005.01583).**
 
 You can also find the PDF of the paper in the repo [here](https://github.com/LibraryOfCongress/newspaper-navigator/tree/master/whitepaper).
-
-The link to the landing page for the dataset with documentation and demos will be added here over the coming days!
-
 
 ## The Pipeline:
 
@@ -67,7 +64,9 @@ To experiment with training your own visual content recognition model, run the c
 
 ## Processing Your Own Newspaper Pages
 
-Included in this repo are the model weights for a finetuned Faster-RCNN implementation (the R50-FPN backbone from Detectron2's Model Zoo). The model weights are used in the *Newspaper Navigator* pipeline for the construction of the Newspaper Navigator dataset. The R50-FPN backbone was selected because it has the fastest inference time of the Faster-RCNN backbones, and inference time is the bottleneck in *Newspaper Navigator* pipeline (approximately 0.1 seconds per image on an NVIDIA T4 GPU).  Though the X101-FPN backbone reports a slightly higher box average precision (43 \% vs. 37.9 \%), inference time is approximately 2.5 times slower, which would drastically increase the pipeline runtime.
+The model weights file for the finetuned visual content recognition model is available [here](https://news-navigator.labs.loc.gov/model_weights/model_final.pth) (the file is approximately 300 MB in size).
+
+The visual content recognition model is a finetuned Faster-RCNN implementation (the R50-FPN backbone from Detectron2's Model Zoo). The model weights are used in the *Newspaper Navigator* pipeline for the construction of the Newspaper Navigator dataset. The R50-FPN backbone was selected because it has the fastest inference time of the Faster-RCNN backbones, and inference time is the bottleneck in *Newspaper Navigator* pipeline (approximately 0.1 seconds per image on an NVIDIA T4 GPU).  Though the X101-FPN backbone reports a slightly higher box average precision (43 \% vs. 37.9 \%), inference time is approximately 2.5 times slower, which would drastically increase the pipeline runtime.
 
 Here are performance metrics on the model available for use; the model consists of the Faster-RCNN R50-FPN backbone from Detectron2's Model Zoo (all training was done on an AWS g4dn.2xlarge instance with a single NVIDIA T4 GPU) finetuned on the training set described above:
 
