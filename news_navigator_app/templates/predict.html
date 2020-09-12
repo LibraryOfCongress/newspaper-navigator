@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for(".static", filename="news-navigator.css") }}">
+    <script src="//assets.adobedtm.com/dac62e20b491e735c6b56e64c39134d8ee93f9cf/satelliteLib-6b47f831c184878d7338d4683ecf773a17973bb9.js"></script>
+    <script type="text/javascript"
+             src="{{ url_for('.static', filename='app.js') }}"></script>
+    <meta charset="UTF-8">
+    <title>My AI Navigators</title>
+
+</head>
+
+<body onload="set_annotations('menu_predict')">
+
+
+<div class="navbar">
+  <a id="menu_search" onclick="return verify_name();"
+  data-tooltip="Click here to return to the main search page!"
+  >Search</a>
+  <a id="menu_view" onclick="return verify_name();"
+  data-tooltip="Click here to view your collection!"
+  >My Collection</a>
+  <a id="menu_predict" onclick="return verify_prediction_on_predict_page();">Train My AI Navigators</a>
+  <a id= "menu_about" onclick="return verify_name();" style="float:right;margin-right:30px;"
+  data-tooltip-r="Click here to learn more about Newspaper Navigator and access the FAQ!"
+  >About</a>
+  <a class="dataarchaeology" href="https://hcommons.org/deposits/item/hc:32415/" target="_blank" style="float:right;"
+  data-tooltip-r="Click here to read the Newspaper Navigator data archaeology, which describes how machine learning
+  affects discoverability in this app and why we need to be careful when using these tools."
+  >Data Archaeology</a>
+  <a class="lclabs" href="https://labs.loc.gov/" target="_blank" style="float:right;"
+  data-tooltip-r="Click here to learn more about LC Labs!"
+  >
+  LC Labs </a>
+  <a class="chronam" href="https://chroniclingamerica.loc.gov/" target="_blank" style="float:right;"
+  data-tooltip-r="Click here to visit the Chronicling America search portal!">
+  Chronicling America
+  </a>
+</div>
+
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <p>Loading...</p>
+    <div class="loader"></div>
+  </div>
+</div>
+
+<div id="panel" class="panel">
+    <!-- <div style="float:right">
+      <a class="button" id="share" onclick="share()"
+      data-tooltip="Click here to generate a URL that preserves the state of your collection and AI navigators. Use it to save
+        your progress or share what you've found!"
+        >Save</a>
+    </div>
+    <br> -->
+  <h4 style="padding-left: 10px; padding-right: 10px; margin-block-start: 35px; margin-block-end: 30px;"
+  data-tooltip="Here, you can toggle between your AI navigators or create a new one.">
+     Select an AI navigator:
+  </h4>
+  <div id="innerpanel">
+  </div>
+  <br>
+  <br>
+  <a class="facetbutton" onclick="return create_new_facet();"
+  data-tooltip="Click here to create a new AI navigator!"
+  >+ New AI Navigator</a>
+</div>
+
+
+<div class="split left">
+<section class="half">
+  <a class="button" id="share" onclick="share()"
+  data-tooltip="Click here to generate a URL that preserves the state of your collection and AI navigators. Use it to save
+    your progress or share what you've found!"
+    >Save</a>
+  <h4 style="padding-left: 10px; padding-right: 10px; font-size: 20px;"
+  data-tooltip="Select photos from your collection below or photos on the right
+    to tell this AI navigator to retrieve similar photos.">
+    (+) The AI navigator will try to find photos like the ones selected below!
+  </h4>
+
+  <div id="positive-images-wrapper">
+    {% for result in plus_library %}
+      <div class="imagecontainer" id="{{ result.uuid }}positiveimagecontainergallery">
+      <img id="{{ result.uuid }}librarypositive"
+      onclick="update_annotations({{ result.uuid }},  'menu_predict', 'positive')"
+      src="{{ result.IIIF_downsampled_url }}"
+      title="{{ result.pub_month }}/{{ result.pub_day }}/{{ result.pub_year }}
+{{ result.name }}
+{{ result.ocr }}"
+      width="200">
+      <img src="{{ url_for(".static", filename="plus.png") }}" id="{{ result.uuid }}plus" class="saved" onclick="update_annotations({{ result.uuid }}, 'menu_predict', 'positive')">
+      <a id="{{ result.uuid }}positivebutton" class="addtolibrarybutton" style="font-size:12px;" onclick="update_annotations({{ result.uuid }}, 'menu_predict', 'positive')">Add +</a>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+  <section class="half" style="border-top: 3px dashed lightgray; text-align: center; height: 34px;  overflow: hidden;">
+      <a class="button" id="tunebutton" onclick="return ml_reset()"; style="color: #bbb; border: 3px solid transparent;"
+      data-tooltip="Once you have finished adjusting your selections, click here to re-train your AI navigator!">Train My AI Navigator!</a>
+  </section>
+
+  <section class="half" style="border-top: 3px dashed lightgray;">
+
+    <h4 style="padding-left: 10px; padding-right: 10px;"
+    data-tooltip="Select photos below or on the right to tell this AI navigator to what to avoid.">
+    (-) The AI navigator will try to avoid photos like the ones selected below!
+    </h4>
+
+    <div id="negative-images-wrapper">
+      {% for result in minus_library %}
+        <div class="imagecontainer" id="{{ result.uuid }}negativeimagecontainergallery">
+        <img id="{{ result.uuid }}librarynegative"
+        onclick="update_annotations({{ result.uuid }},  'menu_predict', 'negative')"
+        src="{{ result.IIIF_downsampled_url }}"
+        title="{{ result.pub_month }}/{{ result.pub_day }}/{{ result.pub_year }}
+  {{ result.name }}
+  {{ result.ocr }}"
+        width="200">
+        <img src="{{ url_for(".static", filename="minus.png") }}" id="{{ result.uuid }}minus" class="saved" onclick="update_annotations({{ result.uuid }}, 'menu_predict', 'negative')">
+        <a id="{{ result.uuid }}negativebutton" class="addtolibrarybutton" style="font-size:12px;" onclick="update_annotations({{ result.uuid }}, 'menu_predict', 'negative')">Add -</a>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+</div>
+
+
+<div class="split right" id = "righthalf">
+
+<h1 contenteditable="true" id="facet_name" style="color:silver;" oninput="update_facet_name();" placeholder="&#9998; Name my AI navigator!"></h1>
+
+<h4 style="font-size:15px;">
+  Below, your AI navigator has found visually similar photos based on the selections on the left. You can re-train your AI navigator
+  by adjusting your selections on the left and making new selections below.</h4>
+
+{% from "_formhelpers.html" import render_field %}
+<form method="get" id="mlsearchform">
+  <table class="searchgrid" style="display:none;">
+  <tr>
+    <td>
+    {{ render_field(form.ml_select_state) }}
+  </td>
+  <td>+</td>
+  <td>
+    {{ render_field(form.ml_select_start_year) }}
+  </td>
+  <td>+</td>
+  <td>
+    {{ render_field(form.ml_select_end_year) }}
+  </td>
+  <td>+</td>
+  <td>
+    {{ render_field(form.ml_search) }}
+  </td>
+  <td>
+    <button type="submit" style="font-size:20px; font-family:monospace;" onclick="loading();"
+    data-tooltip-r="Click here to filter your AI navigator's results."
+    >&#x1F50D;</button>
+  </td>
+  <td>
+    <a class="button" id="reset" onclick="return ml_reset();" style="font-size:13px;"
+    data-tooltip-r="Click here to clear the filters and reset your search."
+    >Reset</a>
+  </td>
+</tr>
+</table>
+
+    <!-- <table>
+      <tbody>
+        <tr>
+          {% if search_suggestions|length > 0 %}
+          <td colspan="2"> Top Terms: </td>
+          {% for suggestion in search_suggestions %}
+          <td>
+          <a class="button" onclick="search_suggestion('{{ suggestion }}', 'menu_predict')">{{ suggestion }}</a>
+          </td>
+          {% endfor %}
+          {% endif %}
+        </tr>
+      </tbody>
+    </table> -->
+
+    {% if results %}
+    <!-- <table>
+      <tbody>
+      <tr>
+        <td colspan=2>
+        {{ pagination.info }}
+      </td>
+      </tr>
+    </tbody>
+  </table> -->
+
+        <div id="predict-images-wrapper">
+        {% for result in results %}
+        <div class="imagecontainer" id="{{ result.uuid }}imagecontainergallery">
+          <img id="{{ result.uuid }}gallery"
+          onclick="update_positive_library({{ result.uuid }}, 'menu_predict')"
+          src="{{ result.IIIF_downsampled_url }}"
+          title="{{ result.pub_month }}/{{ result.pub_day }}/{{ result.pub_year }}
+{{ result.name }}
+{{ result.ocr }}"
+          width="200">
+          <img src="{{ url_for(".static", filename="star.png") }}" id="{{ result.uuid }}star" class="saved">
+          <a id="{{ result.uuid }}minusbutton" class="minusbutton" onclick="update_negative_library({{ result.uuid }}, 'menu_predict')">-</a>
+          <a id="{{ result.uuid }}plusbutton" class="plusbutton" onclick="update_positive_library({{ result.uuid }}, 'menu_predict')">+</a>
+        </div>
+        {% endfor %}
+        </div>
+
+        <!-- {{ pagination.links }}
+
+        <table>
+          <tbody>
+            <tr>
+              <td colspan=3>
+              {{ pagination.links }}
+            </td>
+          </tr>
+        </tbody>
+      </table> -->
+
+    {% else %}
+
+      <table>
+        <tr>
+          <div style="font-size:15px;">
+            No photographs match your search filters! Reset the filters by clicking here:
+            <a class="button" id="reset" onclick="return ml_reset();"
+            data-tooltip="Click here to clear the filters and reset your search."
+            >Reset Filters</a>
+        </div>
+      </tr>
+      </table>
+
+    {% endif %}
+
+    <div hidden id = "plus_library_bar">
+    {{ render_field(form.plus_library) }}
+    </div>
+
+    <div hidden id = "minus_library_bar">
+    {{ render_field(form.minus_library) }}
+    </div>
+
+    <div hidden id = "plus_annotations_bar">
+    {{ render_field(form.positive) }}
+    </div>
+
+    <div hidden id = "minus_annotations_bar">
+    {{ render_field(form.negative) }}
+    </div>
+
+    <div hidden id = "facet_names_bar">
+    {{ render_field(form.facet_names) }}
+    </div>
+
+    <div hidden id = "facet_index_bar">
+    {{ render_field(form.facet_index) }}
+    </div>
+
+    <div hidden id = "selected_facets_bar">
+    {{ render_field(form.selected_facets) }}
+    </div>
+
+    <div hidden id = "view_bar">
+    {{ render_field(form.view) }}
+    </div>
+
+    <div hidden id = "date_ascending_bar">
+    {{ render_field(form.date_ascending) }}
+    </div>
+
+    <div hidden>
+    {{ render_field(form.search) }}
+    </div>
+
+    <div hidden>
+    {{ render_field(form.select_state) }}
+    </div>
+
+    <div hidden>
+    {{ render_field(form.select_start_year) }}
+    </div>
+
+    <div hidden>
+    {{ render_field(form.select_end_year) }}
+    </div>
+
+    <div hidden id = "start_time_bar">
+    {{ render_field(form.start_time) }}
+    </div>
+
+  </form>
+  </div>
+
+  <script>
+    if(window['_satellite']){_satellite.pageBottom();}
+  </script>
+
+</body>
+</html>

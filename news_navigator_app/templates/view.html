@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for(".static", filename="news-navigator.css") }}">
+    <script src="//assets.adobedtm.com/dac62e20b491e735c6b56e64c39134d8ee93f9cf/satelliteLib-6b47f831c184878d7338d4683ecf773a17973bb9.js"></script>
+    <script type="text/javascript"
+             src="{{ url_for('.static', filename='app.js') }}"></script>
+    <meta charset="UTF-8">
+    <title>My Newspaper Navigator Collection</title>
+
+</head>
+
+<body onload="set_annotations('menu_view')">
+
+  <div class="navbar">
+    <a id="menu_search" onclick="loading();"
+    data-tooltip="Click here to return to the main search page!"
+    >Search</a>
+    <a id="menu_view">My Collection</a>
+    <a id="menu_predict" onclick="return verify_prediction();"
+    data-tooltip="Click here to train your AI navigators to retrieve photos according to visual similarity!"
+    >Train My AI Navigators</a>
+    <a id= "menu_about" style="float:right;margin-right:30px;"
+    data-tooltip-r="Click here to learn more about Newspaper Navigator and access the FAQ!"
+    >About</a>
+    <a class="dataarchaeology" href="https://hcommons.org/deposits/item/hc:32415/" target="_blank" style="float:right;"
+    data-tooltip-r="Click here to read the Newspaper Navigator data archaeology, which describes how machine learning
+    affects discoverability in this app and why we need to be careful when using these tools."
+    >Data Archaeology</a>
+    <a class="lclabs" href="https://labs.loc.gov/" target="_blank" style="float:right;"
+    data-tooltip-r="Click here to learn more about LC Labs!"
+    >
+    LC Labs </a>
+    <a class="chronam" href="https://chroniclingamerica.loc.gov/" target="_blank" style="float:right;"
+    data-tooltip-r="Click here to visit the Chronicling America search portal!">
+    Chronicling America
+    </a>
+  </div>
+
+
+
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <p>Loading...</p>
+      <div class="loader"></div>
+    </div>
+  </div>
+
+
+  <div style="box-sizing:content-box;margin:15px;width:calc(100%-15px);">
+    <div style="float:left">
+      <a class="button" id="share" onclick="share()"
+      data-tooltip="Click here to generate a URL that preserves the state of your collection and AI navigators. Use it to save
+        your progress or share what you've found!"
+        >Save</a>
+      <a class="button" id="clear" href="/search"
+      data-tooltip="Click here to clear all of your selections and start over!"
+        >Clear & Restart</a>
+    </div>
+    <div style="float:right;">
+    <a class="button" id="gallerybutton" onclick="toggle_gallery('gallery', 'menu_view')"
+    data-tooltip-r="This view arranges the photos into a gallery.">Gallery</a>
+    <a class="button" id="listbutton" onclick="toggle_gallery('list', 'menu_view')"
+    data-tooltip-r="This view displays the photos sequentially as a list with metadata displayed.">List</a>
+    </div>
+  </div>
+
+<br>
+<h2>Here is your collection:</h2>
+
+    {% if results %}
+
+    <table style="width:calc(100%-15px); margin:15px;">
+      <tbody>
+        <tr>
+          <td style="text-align:left;">
+          {{ pagination.info }}
+          </td>
+        <td>
+          <a class="button" id="updatebutton"
+          data-tooltip="Click here to update your collection based on your selections below."
+          >Update</a>
+          <a class="button" id="downloadmetadata"
+          data-tooltip="Click here to download a spreadsheet containing
+                        the metadata for the photos in your collection, including links
+                        for downloading the photos."
+          >Download Metadata</a>
+        </td>
+        <td>
+          <div id="sort" style="text-align:right; font-weight: bold; margin-right: 15px;"
+          data-tooltip-r="Click here to sort your collection!"
+          ></div>
+        </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <div id="images-wrapper" style="width:calc(100%-15px);margin:15px;">
+      {% for result in results %}
+        <div class="imagecontainer" id="{{ result.uuid }}imagecontainergallery">
+        <img id="{{ result.uuid }}gallery"
+        onclick="return update_positive_library({{ result.uuid }}, 'menu_view')"
+        src="{{ result.IIIF_downsampled_url }}"
+        title="{{ result.pub_month }}/{{ result.pub_day }}/{{ result.pub_year }}
+{{ result.name }}
+{{ result.ocr }}"
+        width="200">
+        <img src="{{ url_for(".static", filename="star.png") }}" id="{{ result.uuid }}star" class="saved" onclick="return update_positive_library({{ result.uuid }}, 'menu_view')">
+        <a class="moreinfobutton" onclick="show_more_info('{{ result.uuid }}modal')">Info</a>
+        <a id="{{ result.uuid }}librarybutton" class="addtolibrarybutton" onclick="return update_positive_library({{ result.uuid }}, 'menu_view')">+ Collection</a>
+          <div id="{{ result.uuid }}modal" class="infomodal" onclick="close_more_info('{{ result.uuid }}modal');">
+            <div class="infomodalcontent" onclick="stop_click_propagation(event);">
+              <span class="close" onclick="close_more_info('{{ result.uuid }}modal')">&times;</span>
+              <table style="margin:auto">
+                <tbody>
+                  <tr>
+                  <td>
+                  <a class="imagebutton" href="{{ result.IIIF_url }}?response-content-disposition=attachment" target="_blank">download image</a>
+                </td>
+                <td>
+                  <a class="imagebutton" href="{{ result.site_url }}" target="_blank">view full issue</a>
+                </td>
+                <td>
+                  <a class="imagebutton" href="https://chroniclingamerica.loc.gov/lccn/{{ result.lccn }}" target="_blank">learn about this newspaper</a>
+                </td>
+                <td>
+                  <a class="imagebutton" id="cite" onclick="cite('{{ result.url }}')">cite this</a>
+                </td>
+                </tr>
+            </tbody>
+          </table>
+          <table>
+            <tbody>
+              <tr>
+                <td>
+                  <img src="{{ result.IIIF_downsampled_url }}" alt="{{ result.ocr }}" height="250" style="filter:brightness(100%);">
+                </td>
+                <td>
+                </td>
+                <td>
+                  <div class=year><b>{{ result.pub_month }}/{{ result.pub_day }}/{{ result.pub_year }} {{ result.name }}</b></div>
+                  <div class=ocr>{{ result.ocr }}</div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+            </div>
+          </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <table id="imagelist" style="display:none;margin:15px;">
+        <tbody>
+
+        {% for result in results %}
+        <tr>
+            <td class=year>{{ result.pub_month }}/{{ result.pub_day }}/{{ result.pub_year }}</td>
+            <td class=ocr colspan=3>{{ result.ocr }}</td>
+        </tr>
+
+            <tr>
+                <td></td>
+                <td class=image width="200">
+                  <div class="imagecontainer" id="{{ result.uuid }}imagecontainerlist">
+                  <img id="{{ result.uuid }}" onclick="return update_positive_library({{ result.uuid }}, 'menu_view')" src="{{ result.IIIF_downsampled_url }}" alt="{{ result.ocr }}" width="200">
+                  <a id="{{ result.uuid }}librarybuttonlist" class="addtolibrarybutton" onclick="return update_positive_library({{ result.uuid }}, 'menu_view')">+ Collection</a>
+                  <img src="{{ url_for(".static", filename="star.png") }}" id="{{ result.uuid }}starlist" class="saved" onclick="return update_positive_library({{ result.uuid }}, 'menu_view')">
+                </div>
+                </td>
+                <td width="100">
+                </td>
+                <td>
+                  <div style="font-weight:bold;">{{ result.name }}</div>
+                  <br>
+                  <a class="imagebutton" href="{{ result.IIIF_url }}?response-content-disposition=attachment" target="_blank">download image</a>
+                  <br>
+                  <br>
+                  <a class="imagebutton" href="{{ result.site_url }}" target="_blank">view full issue in Chronicling America</a>
+                  <br>
+                  <br>
+                  <a class="imagebutton" href="https://chroniclingamerica.loc.gov/lccn/{{ result.lccn }}" target="_blank">learn more about this newspaper title</a>
+                  <br>
+                  <br>
+                  <a class="imagebutton" id="cite" onclick="cite('{{ result.url }}')">cite this</a>
+                </td>
+            </tr>
+
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {{ pagination.links }}
+
+
+    {% else %}
+        There are no currently photos in your collection. Navigate to the search page and select some photos!
+    {% endif %}
+
+    <script>
+      if(window['_satellite']){_satellite.pageBottom();}
+    </script>
+
+</body>
+
+<footer style="padding:20px 5px 5px 5px;">
+  <h3>Newspaper Navigator is a project by Benjamin Charles Germain Lee as part of the 2020
+    <a href="https://labs.loc.gov/about/opportunities/innovator-in-residence-program" target="_blank">
+        Innovator in Residence Program</a>
+        at the
+    <a href="https://www.loc.gov/" target="_blank">Library of Congress</a>.
+  </h3>
+</footer>
+</html>

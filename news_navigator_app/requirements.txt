@@ -1,0 +1,7 @@
+Flask==1.1.2
+flask-paginate==0.6.0
+Flask-WTF==0.14.3
+Jinja2==2.10.1
+nltk==3.4.4
+redis
+requests==2.22.0

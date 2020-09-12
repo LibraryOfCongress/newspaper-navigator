@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for(".static", filename="news-navigator.css") }}">
+    <script src="//assets.adobedtm.com/dac62e20b491e735c6b56e64c39134d8ee93f9cf/satelliteLib-6b47f831c184878d7338d4683ecf773a17973bb9.js"></script>
+    <script type="text/javascript"
+             src="{{ url_for('.static', filename='app.js') }}"></script>
+    <meta charset="UTF-8">
+    <title>About Newspaper Navigator</title>
+  </head>
+
+  <body onload="set_annotations('menu_about')">
+
+    <div class="navbar">
+      <a id="menu_search" onclick="loading();"
+      data-tooltip="Click here to return to the main search page!"
+      >Search</a>
+      <a id="menu_view"
+      data-tooltip="Click here to view your collection!"
+      >My Collection</a>
+      <a id="menu_predict" onclick="return verify_prediction();"
+      data-tooltip="Click here to train your AI navigators to retrieve photos according to visual similarity!"
+      >Train My AI Navigators</a>
+      <a id= "menu_about" style="float:right;margin-right:30px;"
+      >About</a>
+      <a class="dataarchaeology" href="https://hcommons.org/deposits/item/hc:32415/" target="_blank" style="float:right;"
+      data-tooltip-r="Click here to read the Newspaper Navigator data archaeology, which describes how machine learning
+      affects discoverability in this app and why we need to be careful when using these tools."
+      >Data Archaeology</a>
+      <a class="lclabs" href="https://labs.loc.gov/" target="_blank" style="float:right;"
+      data-tooltip-r="Click here to learn more about LC Labs!"
+      >
+      LC Labs </a>
+      <a class="chronam" href="https://chroniclingamerica.loc.gov/" target="_blank" style="float:right;"
+      data-tooltip-r="Click here to visit the Chronicling America search portal!">
+      Chronicling America
+      </a>
+    </div>
+
+    <div id="modal" class="modal">
+      <div class="modal-content">
+        <p>Loading...</p>
+        <div class="loader"></div>
+      </div>
+    </div>
+
+    <div class="linksbox">
+      <div style="text-align:center; font-weight:bold; font-size:18px; padding: 6px 8px 6px 16px;">Resources</div>
+      <a href="https://news-navigator.labs.loc.gov" target="_blank">Newspaper Navigator Dataset</a>
+      <a href="https://arxiv.org/abs/2005.01583" target="_blank">Newspaper Navigator Dataset Paper</a>
+      <a href="https://hcommons.org/deposits/item/hc:32415/" target="_blank">Newspaper Navigator Data Archaeology</a>
+      <a href="https://github.com/LibraryOfCongress/newspaper-navigator" target="_blank">Newspaper Navigator Code</a>
+      <a href="https://chroniclingamerica.loc.gov" target="_blank">Chronicling America</a>
+      <a href="https://labs.loc.gov" target="_blank">LC Labs</a>
+      <a href="https://loc.gov" target="_blank">Library of Congress</a>
+    </div>
+
+    <div class="main">
+
+    <h3>A project by Benjamin Charles Germain Lee as part of the 2020
+      <a href="https://labs.loc.gov/about/opportunities/innovator-in-residence-program" target="_blank">
+        Innovator in Residence Program</a>
+      at the
+      <a href="https://www.loc.gov/" target="_blank">Library of Congress</a>.
+    </h3>
+
+    <h2>About</h2>
+
+      <div class="question">
+        Q: What is Newspaper Navigator?
+      </div>
+      <div class="answer">
+        A: <a href="https://labs.loc.gov/work/experiments/newspaper-navigator/" target="blank_">Newspaper Navigator</a> is a project being carried out by Benjamin (Ben) Charles Germain Lee as part of the
+        <a href="https://labs.loc.gov/about/opportunities/innovator-in-residence-program" target="_blank">Innovator in Residence Program</a>
+        at the <a href="https://www.loc.gov/" target="_blank">Library of Congress</a>.
+        The goals of Newspaper Navigator are 1) to extract visual content from 16+ million pages of digitized historic American newspapers in <i href="https://chroniclingamerica.loc.gov" target="_blank">Chronicling America</i>
+        and 2) re-imagine how you, members of the American public, can search the visual content using machine learning techniques.
+        The first phase (extracting the visual content) was completed in April, 2020, and resulted in the full <a href="https://news-navigator.labs.loc.gov" target="_blank">Newspaper Navigator dataset</a> (more info below). The second phase of Newspaper Navigator consists of the application that you are currently using!
+        <b><u>All Newspaper Navigator photos in the app and dataset are in the public domain!</u></b>
+      </div>
+      <div class="question">
+        Q: What is <i>Chronicling America</i>?
+      </div>
+      <div class="answer">
+        A: <i href="https://chroniclingamerica.loc.gov" target="_blank">Chronicling America</i> is a database of 16+ million digitized historic newspapers, all of which are in the public domain. It is a product of the
+        <a href="https://www.loc.gov/ndnp/" target="_blank">National Digital Newspaper Program</a>, itself a partnership of the <a href="https://www.loc.gov/" target="_blank">Library of Congress</a>
+        and the <a href="https://neh.gov" target="_blank">National Endowment for the Humanities</a>. You can learn more about <i>Chronicling America</i> <a href="https://chroniclingamerica.loc.gov/about/" target="blank_">here</a>.
+         In addition, you can find visualizations of <i>Chronicling America</i> <a href="https://www.loc.gov/ndnp/data-visualizations/" target="blank_">here</a>.
+      </div>
+      <div class="question">
+        Q: What can I do with this Newspaper Navigator application?
+      </div>
+      <div class="answer">
+        A: This application enables you to search and explore historic newspaper photographs. You can search by keyword over the photos' captions
+        (extracted from the OCR of each newspaper page), as well as search by visual similarity. The visual similarity search capability retrieves relevant
+        photos by empowering you to train a machine learning algorithm by selecting photos that you are interested in. The application contains 1.56 million photos from the Newspaper Navigator dataset, consisting of all extracted photos in the dataset
+        published between 1900 and 1963 with confidence scores above 90%. Advertisements are considered a separate category in the Newspaper Navigator dataset,
+        but you may still find some advertisements using this application (the visual content recognition model was not 100% perfect at classifying visual content type,
+        and there are also lots of advertisements that include photographs!).
+      </div>
+      <div class="question">
+        Q: Where can I learn more about the Newspaper Navigator dataset?
+      </div>
+      <div class="answer">
+        A: You can find the full Newspaper Navigator dataset <a href="https://news-navigator.labs.loc.gov" target="_blank">here</a>, along with instructions documenting
+        how to query the dataset using HTTPS and S3 requests, as well as how to download pre-packaged subsets of the dataset.
+        In addition, a whitepaper describing the dataset and its construction can be found <a href="https://arxiv.org/abs/2005.01583" target="blank_">here</a>. To learn more
+        about the ways in which machine learning affects discoverability of photos in the dataset, see the data archaeology <a href="https://hcommons.org/deposits/item/hc:32415/" target="_blank">here</a>.
+        Lastly, we hosted a data jam on May 7, 2020. The full archived recording can be found <a href="https://www.loc.gov/item/webcast-9253" target="blank_">here</a>. The recording
+        includes a presentation on the dataset, a tutorial for how to use it, and a show-and-tell of projects created by participants.
+      </div>
+      <div class="question">
+        Q: How does the visual search capability provided by Newspaper Navigator work?
+      </div>
+      <div class="answer">
+        A: The visual search capability behind Newspaper Navigator is powered by a machine learning algorithm that learns from the selections that you make
+        and returns images that are visually similar to your selections. In the language of machine learning, your positive and negative
+        selections are training data for the algorithm. The Newspaper Navigator visual search function is powered by image embeddings. An image embedding is a low-dimensional representation
+        of an image, often a list of a few hundred or a few thousand numbers, that captures much of the image’s semantic
+        content. Image embeddings are typically generated by feeding an image into a pre-trained neural image classification model (i.e., a model that takes in an image
+        and outputs a label of "dog" or "cat") and extracting a representation of the image from one of the model’s hidden layers.
+        The Newspaper Navigator dataset contains ResNet-18 image embeddings for all of the photos (<a href="https://arxiv.org/pdf/1512.03385.pdf" target="_blank">ResNet</a>
+          refers to a specific image classification model architecture). The system trains
+        a machine learner on the fly using the embeddings for your positive and negative examples (as well as some additional randomly-drawn negative examples).
+        The machine learner then predicts over all 1.56 million photos, and the results are sorted according to prediction score.
+        Because the ResNet-18 image embeddings are low-dimensional (512 dimensions to be precise), training and predicting over all
+        1.56 million photos takes only seconds.
+      </div>
+      <div class="question">
+        Q: Machine learning has a fraught history of perpetuating marginalization. Have you studied or audited your system from the perspective of algorithmic bias?
+      </div>
+      <div class="answer">
+        A: This question is incredibly important. If you navigate to <a href="https://hcommons.org/deposits/item/hc:32415/" target="_blank">this link</a> (also linked to on the main menu),
+        you will find a paper discussing the ways
+        in which Newspaper Navigator mediates the discoverability of newspaper photos, with a particular focus on algorithmic bias. In this writing, which I call
+        a "data archaeology," I trace the journeys of four newspaper photos of W.E.B. Du Bois as they travel through the <i>Chronicling America</i> and Newspaper Navigator pipelines
+        as a case study. If you would like to discuss this data archaeology or have any questions regarding machine learning and how it perpetuates marginalization, please feel free to email me
+        at <a href="mailto:belee@loc.gov">belee@loc.gov</a> or contact me on <a href="https://twitter.com/lee_bcg?lang=en" target="blank_">Twitter</a>
+        (my email account will be de-activated in the coming months).
+      </div>
+      <div class="question">
+        Q: The visual search capability with the AI navigators doesn't seem to be learning the topic or concept that I'm interested in. What should I do?
+      </div>
+      <div class="answer">
+        A: I'd recommend experimenting with different tunings by clicking different training examples. If that doesn't seem to work, you might
+        be encountering a limitation of the machine learning algorithm itself. While image embeddings capture an amazing amount of
+        information, they do not always encode relationships between visually similar images!
+      </div>
+      <div class="question">
+        Q: Why do the search results contain duplicate examples of a photo?
+      </div>
+      <div class="answer">
+        A: Photos were often printed in many different newspaper issues and titles, so you have found a photo that went "viral"!
+      </div>
+      <div class="question">
+        Q: Some of the photo captions have typos. Others are incomplete or contain extraneous text. Is there an explanation for this?
+      </div>
+      <div class="answer">
+        A: The transcription for each <i href="https://chroniclingamerica.loc.gov" target="_blank">Chronicling America</i> page is generated using an automated optical character recognition (OCR) algorithm. Because the resulting transcription is
+        machine-generated, its quality is dependent on a number of factors including scan quality and contrast, typeface, and ink. The photo captions included in this app are part of the
+        <a href="https://news-navigator.labs.loc.gov" target="_blank">Newspaper Navigator
+        dataset</a>, and each caption was identified and extracted by a visual content recognition model (this process is described in more detail <a href="https://arxiv.org/abs/2005.01583" target="blank_">here</a>).
+        Because the captions were extracted in an automated fashion, the captions are sometimes clipped or contain neighboring text on the page.
+      </div>
+      <div class="question">
+        Q: When I filter by state/territory, I don't see any search results. Why is this the case?
+      </div>
+      <div class="answer">
+        A: At the time of producing the Newspaper Navigator dataset, <i>Chronicling America</i> did not contain any pages from
+        New Hampshire, Rhode Island, or Wyoming. Try searching by a different state or over all photos!
+      </div>
+      <div class="question">
+        Q: When I filter by state/territory, some of the search results are photographs from newspapers published in other states. Why is this the case?
+      </div>
+      <div class="answer">
+        A: Great question! The state/territory facet filters by a newspaper's geographic coverage, rather than its publication location (geographic coverage is more robust because the publication location
+        refers only to where the first issue of a newspaper was published). A newspaper title's geographic coverage may encompass multiple states & territories, so even if a title seems as though it is from another state,
+        it was still distributed in the state/territory that you selected.
+      </div>
+      <div class="question">
+        Q: How can I save my progress & share my collection?
+      </div>
+      <div class="answer">
+        A: On each page, there is a "save" button. If you click it, it will copy a URL to your clipboard, which you can then save or share with friends by pasting it (CTRL-v). This link will restore your progress.
+        You can also share the link with friends!
+      </div>
+      <div class="question">
+        Q: The URL for saving my progress is quite long. Can I shorten it?
+      </div>
+      <div class="answer">
+        A: Yes! There are a number of URL shorteners available online that will drastically compress the URL.
+      </div>
+      <div class="question">
+        Q: How can I save the photos in my collection?
+      </div>
+      <div class="answer">
+        A: If you click the "download metadata" button on the "My Collection" page, the application will generate a speadsheet (.csv) with metadata for all
+        of the photos in your collection, as well as links for downloading the photos themselves from the Newspaper Navigator dataset and from
+        <i>Chronicling America</i> with <a href="https://iiif.io/about/" target="_blank">IIIF</a>.
+      </div>
+      <div class="question">
+        Q: The website doesn't look right on my screen. Do you have any suggestions?
+      </div>
+      <div class="answer">
+        A: I would recommend visiting this site on a desktop or laptop with a browser that is relatively up-to-date. The mobile version of the site should function,
+        but the interactions are much more fluid on a larger screen.
+      </div>
+      <div class="question">
+        Q: Where can I find the code for Newspaper Navigator, and can I re-use any of it?
+      </div>
+      <div class="answer">
+        A: All code for Newspaper Navigator is available at the <a href="https://github.com/LibraryOfCongress/newspaper-navigator" target="_blank">Newspaper Navigator GitHub repository</a>.
+        This includes all code for the search app, as well as for the creation of the Newspaper Navigator dataset.
+        <u><b>All code is open source and in the public domain for unrestricted re-use!</b></u>
+        We encourage you to re-use this code for your own creative computing and digital humanities projects.
+      </div>
+      <div class="question">
+        Q: How was this application built?
+      </div>
+      <div class="answer">
+        A: I built this application using Python, Flask, HTML, CSS, and vanilla Javascript. I utilized scikit-learn for the
+        back-end machine learning components. All photos are served using IIIF image URLs that are mapped to <i>Chronicling America</i>.
+        The application is containerized using Docker. More info on the app can be found at the
+        <a href="https://github.com/LibraryOfCongress/newspaper-navigator" target="_blank">Newspaper Navigator GitHub repository</a>.
+      </div>
+      <div class="question">
+        Q: I'd like to make a similar application for my own photo dataset using your code. How feasible is this?
+      </div>
+      <div class="answer">
+        A: This is definitely possible! The application is fully containerized using Docker, so
+        setting up a development version of the application should be as easy as cloning the repo and
+        running "docker-compose --up". The bulk of the work will relate to pre-processing your own images and metadata (i.e.,
+        creating image embeddings, formatting the metadata properly, etc.). If you do end up making a similar application with the Newspaper Navigator
+        code, we'd love to hear about it! Email the team at <a href="mailto:LC-Labs@loc.gov">LC-Labs@loc.gov</a>
+        or tweet <a href="https://twitter.com/lc_labs?lang=en" target="_blank">@LC_Labs</a> with the hashtag <a href="https://twitter.com/search?q=%23NewspaperNavigator&src=typed_query" target="_blank">#NewspaperNavigator</a>.
+      </div>
+      <div class="question">
+        Q: Can I share what I've found or created using Newspaper Navigator with you?
+      </div>
+      <div class="answer">
+        A: Definitely, we'd love to hear about what you find and make using Newspaper Navigator! Email the team at <a href="mailto:LC-Labs@loc.gov">LC-Labs@loc.gov</a>
+        or tweet <a href="https://twitter.com/lc_labs?lang=en" target="_blank">@LC_Labs</a> with the hashtag <a href="https://twitter.com/search?q=%23NewspaperNavigator&src=typed_query" target="_blank">#NewspaperNavigator</a>.
+      </div>
+      <div class="question">
+        Q: Who are you?
+      </div>
+      <div class="answer">
+        A: My name is <a href="https://www.bcglee.com" target="blank_">Benjamin Charles Germain Lee</a> (Ben for short!), and
+        I am a 2020 <a href="https://labs.loc.gov/about/opportunities/innovator-in-residence-program" target="_blank">Innovator in Residence</a>
+        at the <a href="https://www.loc.gov/" target="blank_">Library of Congress</a>, as well as a third-year Ph.D. student at the
+        <a href="https://www.cs.washington.edu/" target="blank_">Paul G. Allen School for Computer Science & Engineering</a> at the University of Washington.
+        My research focus is at the intersection of artificial intelligence and human-computer interaction, with application to cultural heritage and the digital humanities.
+        A special thank-you to my advisor, <a href="https://www.cs.washington.edu/people/faculty/weld" target="_blank">Professor Daniel Weld</a>, whose input, advice, and guidance with Newspaper Navigator has been invaluable!
+      </div>
+      <div class="question">
+        Q: How can I contact you?
+      </div>
+      <div class="answer">
+        A: For press inquiries, collaborations, questions, and feedback, please feel free to email me at <a href="mailto:belee@loc.gov">belee@loc.gov</a> or contact me on <a href="https://twitter.com/lee_bcg?lang=en" target="blank_">Twitter</a>
+        (my email account will be de-activated in the coming months).
+      </div>
+      <div class="question">
+        Q: How can I stay updated on Newspaper Navigator and LC Labs's other experiments?
+      </div>
+      <div class="answer">
+        A: You can follow the <a href="https://labs.loc.gov/" target="blank_">Library of Congress Labs</a>
+           on <a href="https://twitter.com/lc_labs?lang=en" target="blank_">Twitter</a> or
+           sign up for their <a href="https://listserv.loc.gov/cgi-bin/wa?SUBED1=LC-LABS&A=1" target="blank_">newsletter</a>. You can also follow me on <a href="https://twitter.com/lee_bcg?lang=en" target="blank_">Twitter</a>.
+      </div>
+    </div>
+
+    <script>
+      if(window['_satellite']){_satellite.pageBottom();}
+    </script>
+
+  </body>
+</html>
