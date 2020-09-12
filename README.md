@@ -108,7 +108,7 @@ In order to generate search and recommendation results over similar visual conte
 
 ## A Pipeline for Running at Scale
 
-The pipeline code for processing 16.3 million *Chronicling America* pages can be found in [/notebooks/process_chronam_pages.ipynb](https://github.com/LibraryOfCongress/newspaper-navigator/blob/master/notebooks/process_chronam_pages.ipynb). This code relies on the repo [chronam-get-images](https://github.com/bcglee/chronam-get-images) to produce manifests of each newspaper [batch](https://chroniclingamerica.loc.gov/batches/) in Chronicling America. A .zip file containing the manifests can be found in this repo in [manifests.zip](https://github.com/LibraryOfCongress/newspaper-navigator/blob/master/manifests.zip). When unzipped, the manifests are separated into two folders: `processed` (containing the 16,368,424 pages that were successfully processed) and `failed` (containing the 383 pages that failed during processing).
+The pipeline code for processing 16.3 million *Chronicling America* pages can be found in [/notebooks/process_chronam_pages.ipynb](https://github.com/LibraryOfCongress/newspaper-navigator/blob/master/notebooks/process_chronam_pages.ipynb). This code relies on the repo [chronam-get-images](https://github.com/bcglee/chronam-get-images) to produce manifests of each newspaper [batch](https://chroniclingamerica.loc.gov/batches/) in Chronicling America. A .zip file containing the manifests can be found in this repo in [manifests.zip](https://github.com/LibraryOfCongress/newspaper-navigator/blob/master/manifests.zip). When unzipped, the manifests are separated into two folders: `processed` (containing the 16,368,041 pages that were successfully processed) and `failed` (containing the 383 pages that failed during processing).
 
 This notebook then:
 
@@ -117,7 +117,7 @@ This notebook then:
 3. crops and saves the identified visual content (minus headlines)
 4. extracts textual content within the predicted bounding boxes using the METS/ALTO XML files containing the OCR for each page
 5. generates ResNet-18 and ResNet-50 embeddings for each cropped image using a forked version of [img2vec](https://github.com/bcglee/img2vec) for fast similarity querying
-6. saves the results for each page as a JSON file in a file tree that mirrors the *Chronicling America* file tree.  
+6. saves the results for each page as a JSON file in a file tree that mirrors the *Chronicling America* file tree  
 
 **Note**: to run the pipeline, you must convert the notebook to a Python script, which can be done with the command:  `jupyter nbconvert --to script process_chronam_pages.ipynb`. This is necessary because the code is heavily parallelized using multiprocessing, and the cell execution in Jupyter notebooks presents conflicts.
 
