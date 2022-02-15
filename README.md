@@ -3,6 +3,8 @@
 
 ## By Benjamin Charles Germain Lee (2020 Library of Congress Innovator in Residence)
 
+<i>This project is an experiment and there is no active development and/or maintenance of the codebase. Fork at your own risk! In the unlikely event that there are further updates, the LC Labs team will announce it through our communication channels. Sign up for our listserv on labs.loc.gov, follow us on Twitter @LC_Labs, and watch #NewspaperNavigator . </i>
+
 ## Introduction
 
 The goal of *Newspaper Navigator* is to re-imagine searching over the visual content in [*Chronicling America*](https://chroniclingamerica.loc.gov/about/). The project consists of two stages:
