@@ -1,7 +1,7 @@
-Flask==1.1.2
+Flask==2.2.5
 flask-paginate==0.6.0
 Flask-WTF==0.14.3
-Jinja2==2.11.3
-nltk==3.4.4
+Jinja2==3.1.6
+nltk==3.9
 redis
-requests==2.22.0
+requests==2.32.4
